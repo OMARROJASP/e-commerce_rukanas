@@ -1,8 +1,10 @@
+import { AppDataSource } from "../config/conexion";
+import { ProductEntity } from "../entities/product.entity";
 
 const getProducts = async () => {
-    const response = await fetch('/api/products');
-    if (!response.ok) {
-        throw new Error('Failed to fetch products');
-    }
-    return response.json();
+    const productRepo = AppDataSource.getRepository(ProductEntity);
+    const response = await productRepo.find();
+   return response;
 }
+
+export { getProducts };

@@ -1,13 +1,16 @@
 import { Request, Response } from "express";
+import { getProducts } from "../services/product";
 
 
-const getProducts = async (req: Request, res:Response) => {
+const getProductsController = async (req: Request, res:Response) => {
     try{
-        console.log("Get products")
-        res.send("Send products");
+      const  responseProducts = await getProducts();
+      const data = responseProducts ? responseProducts : "No hay productos";
+      res.send({message: "GET_ALL_PRODUCTS", data: data});
+
     }catch(e){
         console.log(e)
     }
 }
 
-export { getProducts };
+export { getProductsController };
