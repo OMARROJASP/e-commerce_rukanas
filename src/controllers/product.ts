@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getProducts } from "../services/product";
+import { getProducts, insertProduct } from "../services/product";
 
 
 const getProductsController = async (req: Request, res:Response) => {
@@ -13,4 +13,16 @@ const getProductsController = async (req: Request, res:Response) => {
     }
 }
 
-export { getProductsController };
+const saveProductController = async (req: Request, res:Response) => {
+    try{
+        const { body } = req;
+        const responseProducts = await insertProduct(body);
+        console.log( "Aqui esta la informacion: ",responseProducts)
+        const data = responseProducts ? responseProducts : "No se pudo guardar el producto";
+        res.send({message: "POST_PRODUCT", data: data});
+    }catch(e){
+        console.log(e)
+    }
+}
+
+export { getProductsController, saveProductController };
