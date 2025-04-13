@@ -1,15 +1,15 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('products')
 export class ProductEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   prod_id!: number;
 
   @Column({ type: "varchar", length: 100 })
   prod_name!: string;
 
-  @Column()
-  prod_price!: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+prod_price!: number;
 
   @Column({ type: "varchar", length: 100 })
   prod_description!: string;

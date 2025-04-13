@@ -19,5 +19,14 @@ const insertProduct = async (product:Product) => {
     return response;
 }
 
+const updateProduct = async (product:Product, id:number) => {
+    const response = await productRepo.update(id, product);
+    return response;
+}
 
-export { getProducts,insertProduct,getProductById };   
+const deleteProduct = async (id:number) => {
+    const response = await productRepo.delete(id);
+    return response
+}
+
+export { getProducts,insertProduct,getProductById,updateProduct, deleteProduct };   
