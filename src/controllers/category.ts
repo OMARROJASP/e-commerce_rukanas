@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getCategories } from "../services/category";
+import { handleHttp } from "../utils/error.handler";
 
 const getCategoriesController = async (req:Request, res:Response) => {
     try{
@@ -7,7 +8,7 @@ const getCategoriesController = async (req:Request, res:Response) => {
         const data = responseCategories ? responseCategories : "No hay categorias";
         res.send({message: "GET_ALL_CATEGORIES", data: data});
     }catch(e){
-        console.log(e)
+        handleHttp(res, "ERROR_GET_CATEGORIES")
     }
 }
 
