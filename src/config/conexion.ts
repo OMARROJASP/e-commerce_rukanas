@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 import { ProductEntity } from "../entities/product.entity";
 import { CustomerEntity } from "../entities/customer.entity";
+import { CategoryEntity } from "../entities/category.entity";
 
 
 export const AppDataSource = new DataSource({
@@ -12,7 +13,7 @@ export const AppDataSource = new DataSource({
     database: "rukanas_web",
     synchronize: true,
     logging: false,
-    entities: [CustomerEntity, ProductEntity],
+    entities: [CustomerEntity, ProductEntity,CategoryEntity],
     migrations: [],
     subscribers: [],
 })

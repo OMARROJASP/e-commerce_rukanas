@@ -19,7 +19,7 @@ export function createCrudController<T>(service: {
     },
 
     getById: async (req: Request, res: Response) => {
-      try {
+      try { 
         const id = parseInt(req.params.id);
         const data = await service.getById(id);
         res.send({ message: "GET_BY_ID", data: data || "No se encontró" });

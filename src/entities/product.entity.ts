@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { CategoryEntity } from "./category.entity";
 
 @Entity('products')
 export class ProductEntity {
@@ -25,4 +26,7 @@ prod_price!: number;
 
   @Column()
   prod_supplier!: string;
+
+  @ManyToOne(() => CategoryEntity, category => category.products)
+  category!: CategoryEntity; // Relación muchos a uno con CategoryEntity
 }

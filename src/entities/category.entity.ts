@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { ProductEntity } from "./product.entity";
 
 @Entity('categories')
 export class CategoryEntity {
@@ -16,4 +17,7 @@ export class CategoryEntity {
 
     @Column()   
     cat_status!: number;
+
+    @OneToMany(() => ProductEntity, product => product.prod_category)
+    products!: ProductEntity[]; // Relación uno a muchos con ProductEntity
 }
