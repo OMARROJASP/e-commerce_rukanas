@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { CategoryEntity } from "./category.entity";
+import { SupplierEntity } from "./supplier.entity";
 
 @Entity('products')
 export class ProductEntity {
@@ -29,4 +30,7 @@ prod_price!: number;
 
   @ManyToOne(() => CategoryEntity, category => category.products)
   category!: CategoryEntity; // Relación muchos a uno con CategoryEntity
+
+  @ManyToOne(() => SupplierEntity, supplier => supplier.sup_id)
+  supplier!: SupplierEntity; // Relación muchos a uno con SupplierEntity
 }

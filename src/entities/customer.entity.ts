@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { OrderEntity } from "./order.entity";
+import { join } from "path";
 
 @Entity("customers")
 export class CustomerEntity {
@@ -28,4 +30,8 @@ export class CustomerEntity {
 
   @Column({ type: "varchar", length: 100 })
   cx_postal_code!: string;
+
+  @OneToMany(() => OrderEntity, order => order.ord_customer)
+  @JoinColumn({ name: "ord_customer_id", referencedColumnName: "cx_id" })
+  orders!: OrderEntity[]; // Relación uno a muchos con OrderEntity
 }
