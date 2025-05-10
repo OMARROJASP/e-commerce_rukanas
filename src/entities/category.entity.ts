@@ -12,11 +12,14 @@ export class CategoryEntity {
     @Column()
     cat_description!: string;   
 
-    @Column()   
+    @Column({ type: 'varchar', length: 255, nullable: true })   
     cat_imageUrl!: string;  
 
     @Column()   
     cat_status!: number;
+
+    @Column()   
+    cat_area!: number; // 1: Tienda, 2: Lubricantes
 
     @OneToMany(() => ProductEntity, product => product.prod_category)
     products!: ProductEntity[]; // Relación uno a muchos con ProductEntity

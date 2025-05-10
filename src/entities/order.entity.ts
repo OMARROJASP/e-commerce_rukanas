@@ -1,12 +1,13 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { CustomerEntity } from "./customer.entity";
+import { OrderDetailEntity } from "./orderDetail.entity";
 
 @Entity('orders')
 export class OrderEntity {
     @PrimaryGeneratedColumn()
     ord_id!: number;
 
-    @Column()
+    @CreateDateColumn({ type: "timestamp" })
     ord_date!: Date; // Fecha del pedido    
 
     @Column()
@@ -14,4 +15,7 @@ export class OrderEntity {
 
     @ManyToOne(() => CustomerEntity, customer => customer.orders)
     ord_customer!: CustomerEntity; // Relación muchos a uno con CustomerEntity
+
+    @OneToMany(() => OrderDetailEntity, orderDetail => orderDetail.ord_det_order)
+    orderDetails!: OrderDetailEntity[]; // Relación uno a muchos con OrderDetailEntity
 }

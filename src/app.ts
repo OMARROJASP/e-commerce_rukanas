@@ -1,5 +1,6 @@
-import "dotenv/config"
-import express from 'express';  
+import "dotenv/config" 
+import express, { Request, Response, NextFunction,ErrorRequestHandler  } from 'express';
+import multer from 'multer';
 import cors from 'cors';    
 import { router} from './routes'
 import { AppDataSource } from './config/conexion'
@@ -9,6 +10,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());    
 app.use(router)
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    // Error específico de Multer
+    res.status(400).json({ message: err.message });
+  } else if (err) {
+    // Otro tipo de error
+    res.status(500).json({ message: "Error del servidor", error: err.message });
+  } else {
+    next();
+  }
+};
+
+app.use(errorHandler);
 
 AppDataSource.initialize()
   .then(() => {

@@ -4,6 +4,7 @@ import { CustomerEntity } from "../entities/customer.entity";
 import { CategoryEntity } from "../entities/category.entity";
 import { OrderEntity } from "../entities/order.entity";
 import { SupplierEntity } from "../entities/supplier.entity";
+import { OrderDetailEntity } from "../entities/orderDetail.entity";
 
 
 export const AppDataSource = new DataSource({
@@ -15,7 +16,7 @@ export const AppDataSource = new DataSource({
     database: "rukanas_web",
     synchronize: true,
     logging: false,
-    entities: [CustomerEntity, ProductEntity,CategoryEntity, OrderEntity, SupplierEntity],
+    entities: [CustomerEntity, ProductEntity,CategoryEntity, OrderEntity, SupplierEntity, OrderDetailEntity],
     migrations: [],
     subscribers: [],
 })

@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { CategoryEntity } from "./category.entity";
 import { SupplierEntity } from "./supplier.entity";
+import { OrderDetailEntity } from "./orderDetail.entity";
 
 @Entity('products')
 export class ProductEntity {
@@ -33,4 +34,7 @@ prod_price!: number;
 
   @ManyToOne(() => SupplierEntity, supplier => supplier.sup_id)
   supplier!: SupplierEntity; // Relación muchos a uno con SupplierEntity
+
+  @OneToMany(() => OrderDetailEntity, orderDetail => orderDetail.ord_det_product)
+  orderDetails!: OrderDetailEntity[]; // Relación uno a muchos con OrderDetailEntity
 }

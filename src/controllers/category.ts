@@ -25,13 +25,23 @@ const getCategoryByIdController = async (req:Request, res:Response) => {
 }
 
 const saveCategoryController = async (req:Request, res:Response) => {
+    console.log("entro aqui", req.file?.path)
     try{
+        const imageUrl = req.file?.path || ""; // Obtener la URL de la imagen desde el archivo subido
         const { body } = req;
-        const responseCategories = await insertCategory(body);
+        const categoryData = {
+            ...req.body,
+            cat_imageUrl: imageUrl,
+          };
+          console.log("categoryData", categoryData)
+        const responseCategories = await insertCategory(categoryData);
+        console.log("1")
         const data = responseCategories ? responseCategories : "No se pudo guardar la categoria";
+        console.log("2")
         res.send({message: "POST_CATEGORY", data: data});
+        console.log("Datos", data)
     }catch(e){
-        handleHttp(res, "ERROR_GET_CATEGORIES")
+        handleHttp(res, "ERROR_POST_CATEGORIES")
     }
 }
 
