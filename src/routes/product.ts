@@ -1,12 +1,14 @@
 import { Router } from "express";
 import { deleteProductController, getProductByIdController, getProductsController, saveProductController, updateProductController } from "../controllers/product";
+import { uploadProductImage, resizeAndUploadImage } from "../middlewares/imageUploadMiddleware";
+
 
 const router  = Router();
 
 router.get("/", getProductsController)
-router.post("/",saveProductController )
+router.post("/",uploadProductImage, resizeAndUploadImage ,saveProductController )
 router.get("/:id",getProductByIdController )
-router.put("/:id",updateProductController )
+router.put("/:id",uploadProductImage, resizeAndUploadImage ,updateProductController )
 router.delete("/:id",deleteProductController )
 
 export { router  }; 

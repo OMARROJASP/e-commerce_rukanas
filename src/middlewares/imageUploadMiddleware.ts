@@ -1,20 +1,21 @@
-import multer from 'multer';
+import multer, { FileFilterCallback } from 'multer';
 import { cloudinary } from '../config/cloudinaryConfig';
 import { Request, Response, NextFunction } from 'express';
 
 // Configuración de Multer
-const uploadPhoto = multer({
+const createUploader = (fieldName: string, maxCount: number = 1) => {
+  return multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
-    fileFilter: (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-        if(file.mimetype.startsWith('image/')) {  // Corregido: verifica tipos de imagen
-            cb(null, true);
-        } else {
-            cb(new Error('Por favor sube un archivo de imagen (JPEG, PNG, etc.)'));
-        }
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+    fileFilter: (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
+      if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+      } else {
+        cb(new Error('Solo se permiten archivos de imagen (JPEG, PNG, etc.)'));
+      }
     }
-}).array('cat_imageUrl', 5); // Acepta hasta 5 archivos con el campo 'cat_imageUrl'
-
+  }).array(fieldName, maxCount);
+};
 // Función para subir a Cloudinary
 const uploadToCloudinary = (buffer: Buffer, options = {}) => {
     return new Promise((resolve, reject) => {
@@ -46,5 +47,6 @@ const resizeAndUploadImage = async (req: Request, res: Response, next: NextFunct
         res.status(500).json({ error: 'Error subiendo imagen' });
     }
 };
-
-export { uploadPhoto, resizeAndUploadImage };
+export const uploadCategoryImage = createUploader('cat_imageUrl', 1);
+export const uploadProductImage = createUploader('prod_imageUrl', 1);
+export { resizeAndUploadImage };

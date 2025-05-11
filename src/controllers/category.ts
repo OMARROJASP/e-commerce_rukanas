@@ -1,6 +1,7 @@
-import { Request, Response } from "express";
+import { Request, Response,NextFunction } from "express";
 import { deleteCategory, getCategories, getCategoryById, insertCategory, updateCategory } from "../services/category";
 import { handleHttp } from "../utils/error.handler";
+import { cloudinary } from "../config/cloudinaryConfig";
 
 const getCategoriesController = async (req:Request, res:Response) => {
     try{
@@ -23,37 +24,92 @@ const getCategoryByIdController = async (req:Request, res:Response) => {
         handleHttp(res, "ERROR_GET_CATEGORIES")
     }
 }
+ // Ajusta la ruta según tu estructura
 
-const saveCategoryController = async (req:Request, res:Response) => {
-    console.log("entro aqui", req.file?.path)
-    try{
-        const imageUrl = req.file?.path || ""; // Obtener la URL de la imagen desde el archivo subido
-        const { body } = req;
-        const categoryData = {
-            ...req.body,
-            cat_imageUrl: imageUrl,
-          };
-          console.log("categoryData", categoryData)
-        const responseCategories = await insertCategory(categoryData);
-        console.log("1")
-        const data = responseCategories ? responseCategories : "No se pudo guardar la categoria";
-        console.log("2")
-        res.send({message: "POST_CATEGORY", data: data});
-        console.log("Datos", data)
-    }catch(e){
-        handleHttp(res, "ERROR_POST_CATEGORIES")
+const saveCategoryController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    // Verificar si hay imágenes subidas
+    if (!req.body.imageUrls || req.body.imageUrls.length === 0) {
+      res.status(400).json({ 
+        message: "No se proporcionaron imágenes válidas",
+        receivedBody: req.body
+      });
+      return;
     }
-}
 
-const updateCategoryController = async (req:Request, res:Response) => {
+    // Tomar la primera imagen del array
+    const mainImageUrl = req.body.imageUrls[0];
+    
+    // Preparar los datos para la base de datos
+    const categoryData = {
+      cat_name: req.body.cat_name,
+      cat_description: req.body.cat_description,
+      cat_area: req.body.cat_area,
+      cat_status: req.body.cat_status,
+      cat_imageUrl: mainImageUrl
+    };
+
+    // Insertar en la base de datos
+    const responseCategories = await insertCategory(categoryData);
+    
+    res.status(201).json({
+      message: "Categoría creada exitosamente",
+      data: responseCategories,
+      imageUrl: mainImageUrl
+    });
+  } catch (e) {
+    console.error("Error al guardar categoría:", e);
+    handleHttp(res, "ERROR_POST_CATEGORIES");
+  }
+};
+
+const updateCategoryController = async (req:Request, res:Response,  next: NextFunction): Promise<void> => {
     try{
+         // obtenemos el id de la categoria
         const { id } = req.params;
         const idNumber = parseInt(id);
-        const { body } = req;
-        const responseCategories = await updateCategory(body, idNumber);
-        const data = responseCategories ? responseCategories : "No se pudo actualizar la categoria";
-        res.send({message: "PUT_CATEGORY", data: data});
+        // 1. Verificar si la categoría existe
+        const existingCategory = await getCategoryById(idNumber);
+        if(!existingCategory){
+            res.status(404).json({
+                message: "Categoria no encontrada"
+            });
+            return;
+        }
+        // 2. Verificar si hay imágenes subidas
+        let mainImageUrl = existingCategory.cat_imageUrl;
+
+        if( req.body.imageUrls && req.body.imageUrls.length > 0){
+            mainImageUrl = req.body.imageUrls[0];
+
+            // 3. Opcional: Si se subieron nuevas imágenes, puedes eliminar las antiguas
+            if ( existingCategory.cat_imageUrl ){
+                try{
+                    const publicId = extractPublicId(existingCategory.cat_imageUrl);
+                    await cloudinary.uploader.destroy(publicId);    
+                }catch(error){
+                    console.warn("Error al eliminar la imagen anterior:", error);
+                }
+            }
+        }
+        
+       // 4. Preparar datos para actualización
+        const categoryData = {
+            cat_name: req.body.cat_name || existingCategory.cat_name,
+            cat_description: req.body.cat_description || existingCategory.cat_description,
+            cat_area: req.body.cat_area || existingCategory.cat_area,
+            cat_status: req.body.cat_status || existingCategory.cat_status,
+            cat_imageUrl: mainImageUrl
+        }; 
+
+           // 5. Actualizar en base de datos
+        const updatedCategory = await updateCategory(categoryData, idNumber);
+        res.status(200).json({
+            message: "Categoria actualizada exitosamente",
+            data: updatedCategory,
+        })
     }catch(e){
+        console.error("Error al actualizar categoria", e)
         handleHttp(res, "ERROR_GET_CATEGORIES")
     }
 }
@@ -68,6 +124,11 @@ const deleteCategoryController = async (req:Request, res:Response) => {
     }catch(e){
         handleHttp(res, "ERROR_GET_CATEGORIES")
     }
+}
+
+function extractPublicId(imageUrl: string): string {
+  const matches = imageUrl.match(/upload\/(?:v\d+\/)?([^\.]+)/);
+  return matches ? matches[1] : '';
 }
 
 export { getCategoriesController, getCategoryByIdController, saveCategoryController, updateCategoryController,deleteCategoryController };

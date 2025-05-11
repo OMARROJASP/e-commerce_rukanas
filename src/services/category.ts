@@ -15,9 +15,7 @@ const getCategoryById = async (id:number) => {
 }
 
 const insertCategory = async (category:Category) => {
-    console.log("llego hasta qui", category)
     const response = await categoryRepo.save(category);
-    console.log("response", response)
     return response;
 }
 

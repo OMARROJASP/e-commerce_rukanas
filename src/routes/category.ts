@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getCategoriesController,getCategoryByIdController,saveCategoryController,updateCategoryController,deleteCategoryController } from "../controllers/category";
-import { uploadPhoto, resizeAndUploadImage } from "../middlewares/imageUploadMiddleware";
+import { uploadCategoryImage, resizeAndUploadImage } from "../middlewares/imageUploadMiddleware";
 
 
 const router = Router();
@@ -8,11 +8,14 @@ const router = Router();
 router.get("/", getCategoriesController) 
 router.get("/:id", getCategoryByIdController)
 router.post("/", 
-    uploadPhoto, // Middleware para subir archivos
+    uploadCategoryImage, // Middleware para subir archivos
     resizeAndUploadImage, // Middleware para procesar imágenes
     saveCategoryController
 );
-router.put("/:id", updateCategoryController)
+router.put("/:id",
+    uploadCategoryImage, // Middleware para subir archivos
+    resizeAndUploadImage, // Middleware para procesar imágenes
+    updateCategoryController)
 router.delete("/:id", deleteCategoryController)
 
 export { router}

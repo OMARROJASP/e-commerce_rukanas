@@ -12,7 +12,7 @@ export class ProductEntity {
   prod_name!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-prod_price!: number;
+  prod_price!: number;
 
   @Column({ type: "varchar", length: 100 })
   prod_description!: string;

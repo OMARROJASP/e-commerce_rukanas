@@ -1,5 +1,4 @@
 export interface Product {
-    prod_id: number;
     prod_name: string;
     prod_price: number;
     prod_description: string;
@@ -8,3 +7,4 @@ export interface Product {
     prod_stock: number;
     prod_supplier: string;
 }
+
