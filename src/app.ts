@@ -2,11 +2,16 @@ import "dotenv/config"
 import express, { Request, Response, NextFunction,ErrorRequestHandler  } from 'express';
 import multer from 'multer';
 import cors from 'cors';    
+import cookieParser from "cookie-parser";
 import { router} from './routes'
 import { AppDataSource } from './config/conexion'
 const PORT = process.env.PORT || 3001;  
 
 const app = express();
+  // Middlewares
+    app.use(express.json());
+    app.use(cookieParser());
+    
 app.use(cors());
 app.use(express.json());    
 app.use(router)

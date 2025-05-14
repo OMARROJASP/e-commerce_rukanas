@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { OrderEntity } from "./order.entity";
 import { join } from "path";
+import * as bcrypt from "bcryptjs";
 
 @Entity("customers")
 export class CustomerEntity {
@@ -34,4 +35,14 @@ export class CustomerEntity {
   @OneToMany(() => OrderEntity, order => order.ord_customer)
   @JoinColumn({ name: "ord_customer_id", referencedColumnName: "cx_id" })
   orders!: OrderEntity[]; // Relación uno a muchos con OrderEntity
+
+  // Metodo para encriptar contraseña
+  async hashPassword(): Promise<void>{
+    this.cx_password = await bcrypt.hash(this.cx_password,12)
+  } 
+
+  // Método para comparar contraseñas
+  async comparePassword(cantidadPassword: string): Promise<boolean> {
+    return bcrypt.compare(cantidadPassword, this.cx_password)
+  }
 }

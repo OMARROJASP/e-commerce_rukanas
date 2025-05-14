@@ -9,11 +9,11 @@ import { OrderDetailEntity } from "../entities/orderDetail.entity";
 
 export const AppDataSource = new DataSource({
     type: "mysql",
-    host: "localhost",
-    port: 3306,
-    username: "root",
-    password: "Rojas#$70",
-    database: "rukanas_web",
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT || "3306"),
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     synchronize: true,
     logging: false,
     entities: [CustomerEntity, ProductEntity,CategoryEntity, OrderEntity, SupplierEntity, OrderDetailEntity],
