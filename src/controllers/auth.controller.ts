@@ -3,21 +3,35 @@ import { AppDataSource } from "../config/conexion";
 import { CustomerEntity } from "../entities/customer.entity";
 import * as jwt from "jsonwebtoken";
 
+// Verifica que JWT_SECRET esté definido
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET no está definido en las variables de entorno');
+}
+
+const JWT_SECRET_KEY = JWT_SECRET as string;
+
 export class AuthController {
     private userRepository = AppDataSource.getRepository(CustomerEntity);
 
-    async register(req: Request, res: Response){
+    register = async(req: Request, res: Response) : Promise<void> => {
         try{
-            const { cx_email, cx_password } = req.body;
+            const {cx_first_name, cx_last_name,cx_phone,cx_address,cx_city,cx_postal_code, cx_email, cx_password } = req.body;
 
             // verificar que existe el usuario
             const existingUser = await this.userRepository.findOne({where : { cx_email }})
             if (existingUser){
-                return res.status(400).json({message: "El usuario ya existio"});
+                res.status(400).json({message: "El usuario ya existio"});
             }
-
+            
             // crear nuevo Usuario
             const user = new CustomerEntity;
+            user.cx_first_name = cx_first_name,
+            user.cx_last_name = cx_last_name,
+            user.cx_phone = cx_phone;
+            user.cx_address = cx_address;
+            user.cx_city = cx_city;
+            user.cx_postal_code = cx_postal_code;
             user.cx_email = cx_email;
             user.cx_password = cx_password;
             await user.hashPassword();
@@ -28,7 +42,7 @@ export class AuthController {
             //generar token JWT
             const token = jwt.sign(
                 {userId: user.cx_id, cx_email:user.cx_email},
-                process.env.JWT_SECRET,
+                JWT_SECRET_KEY,
                 {expiresIn: "1h"}
             );
 
@@ -44,26 +58,27 @@ export class AuthController {
         }
     }
     
-    async login(req: Request, res: Response) {
+    login = async(req: Request, res: Response) : Promise<void>  => {
     try {
       const {cx_email, cx_password } = req.body;
 
       // Verificar usuario
       const user = await this.userRepository.findOne({ where: { cx_email } });
       if (!user) {
-        return res.status(401).json({ message: "Credenciales inválidas" });
+         res.status(401).json({ message: "Credenciales inválidas" });
+         return;
       }
 
       // Verificar contraseña
       const isMatch = await user.comparePassword(cx_password);
       if (!isMatch) {
-        return res.status(401).json({ message: "Credenciales inválidas" });
+        res.status(401).json({ message: "Credenciales inválidas" });
       }
 
       // Generar token JWT
       const token = jwt.sign(
         { userId: user.cx_id, email: user.cx_email },
-        process.env.JWT_SECRET,
+        JWT_SECRET_KEY ,
         { expiresIn: "1h" }
       );
 

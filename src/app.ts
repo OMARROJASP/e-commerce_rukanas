@@ -4,6 +4,7 @@ import multer from 'multer';
 import cors from 'cors';    
 import cookieParser from "cookie-parser";
 import { router} from './routes'
+import authRoutes from "./routes/auth.routes"
 import { AppDataSource } from './config/conexion'
 const PORT = process.env.PORT || 3001;  
 
@@ -13,7 +14,8 @@ const app = express();
     app.use(cookieParser());
     
 app.use(cors());
-app.use(express.json());    
+app.use(express.json());  
+app.use("/auth", authRoutes)  
 app.use(router)
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {
