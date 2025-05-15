@@ -6,7 +6,8 @@ import { authMiddleware } from '../middlewares/auth.middleware';
 
 const router  = Router();
 
-router.get("/",authMiddleware , getProductsController)
+//router.get("/",authMiddleware , getProductsController)
+router.get("/" , getProductsController)
 router.post("/",uploadProductImage, resizeAndUploadImage ,saveProductController )
 router.get("/:id",getProductByIdController )
 router.put("/:id",uploadProductImage, resizeAndUploadImage ,updateProductController )
