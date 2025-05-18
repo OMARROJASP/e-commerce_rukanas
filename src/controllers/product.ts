@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { getProducts, insertProduct,getProductById, updateProduct, deleteProduct } from "../services/product";
+import { getProducts, insertProduct,getProductById, updateProduct, deleteProduct, getProductsByCategory } from "../services/product";
 import { Product } from "../interface/product.interface";
 import { cloudinary } from "../config/cloudinaryConfig";
 
@@ -123,9 +123,32 @@ const deleteProductController = async (req: Request, res:Response) => {
     }
 }
 
+const getProductsByCategoryController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { category } = req.query;
+
+    if (!category || typeof category !== "string") {
+       res.status(400).json({ message: "Parámetro 'category' inválido o faltante" });
+       return;
+    }
+
+    const responseProducts = await getProductsByCategory(category);
+
+    if (!responseProducts.length) {
+       res.status(404).json({ message: "No se encontraron productos para esta categoría" });
+    }
+
+    res.status(200).json({ message: "LIST_PRODUCTS_BY_CATEGORY", data: responseProducts });
+  } catch (e) {
+    console.error("Error al obtener productos por categoría:", e);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+
 function extractPublicId(imageUrl: string): string {
   const matches = imageUrl.match(/upload\/(?:v\d+\/)?([^\.]+)/);
   return matches ? matches[1] : '';
 }
 
-export { getProductsController, saveProductController,getProductByIdController, updateProductController, deleteProductController};
+export { getProductsController, saveProductController,getProductByIdController, updateProductController, deleteProductController,getProductsByCategoryController};
