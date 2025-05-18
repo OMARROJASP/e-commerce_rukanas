@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { getProducts, insertProduct,getProductById, updateProduct, deleteProduct, getProductsByCategory } from "../services/product";
+import { getProducts, insertProduct,getProductById, updateProduct, deleteProduct, getFilterProducts } from "../services/product";
 import { Product } from "../interface/product.interface";
 import { cloudinary } from "../config/cloudinaryConfig";
 
@@ -123,16 +123,21 @@ const deleteProductController = async (req: Request, res:Response) => {
     }
 }
 
-const getProductsByCategoryController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const getProductsByFilterController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { category } = req.query;
+    const { category, min, max } = req.query;
 
-    if (!category || typeof category !== "string") {
-       res.status(400).json({ message: "Parámetro 'category' inválido o faltante" });
-       return;
-    }
+    // if (!category || typeof category !== "string") {
+    //    res.status(400).json({ message: "Parámetro 'category' inválido o faltante" });
+    //    return;
+    // }
+ 
 
-    const responseProducts = await getProductsByCategory(category);
+    const responseProducts = await getFilterProducts(
+        category as string,
+        min ? parseFloat(min as string) : undefined,
+        max ? parseFloat(max as string) : undefined
+    );
 
     if (!responseProducts.length) {
        res.status(404).json({ message: "No se encontraron productos para esta categoría" });
@@ -140,7 +145,6 @@ const getProductsByCategoryController = async (req: Request, res: Response, next
 
     res.status(200).json({ message: "LIST_PRODUCTS_BY_CATEGORY", data: responseProducts });
   } catch (e) {
-    console.error("Error al obtener productos por categoría:", e);
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };
@@ -151,4 +155,4 @@ function extractPublicId(imageUrl: string): string {
   return matches ? matches[1] : '';
 }
 
-export { getProductsController, saveProductController,getProductByIdController, updateProductController, deleteProductController,getProductsByCategoryController};
+export { getProductsController, saveProductController,getProductByIdController, updateProductController, deleteProductController,getProductsByFilterController};

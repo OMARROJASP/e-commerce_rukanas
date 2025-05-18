@@ -1,3 +1,4 @@
+import { Between, Equal } from "typeorm";
 import { AppDataSource } from "../config/conexion";
 import { ProductEntity } from "../entities/product.entity";
 import { Product } from "../interface/product.interface";
@@ -36,11 +37,26 @@ const deleteProduct = async (id:number) => {
 
 // Peticiones para filtrado de productos por categoria
 
-const getProductsByCategory = async (category: string) => {
-  return await productRepo.find({
-    where: { prod_category: category }
-  });
+const getFilterProducts = async (category?:string, min?:number, max?:number) => {
+    const where: any = {};
+
+    if ( category ) {
+        where.prod_category = Equal(category)
+    }
+
+    if ( min != null && max != null ){
+        where.prod_price = Between(min, max);
+    }else if (min != null ){
+        where.prod_price = Between(min, Number.MAX_SAFE_INTEGER);
+    } else if (max != null) {
+        where.prod_price = Between(0, max);
+    }
+
+ 
+
+ 
+  return await productRepo.find({ where });
 };
 
 
-export { getProducts,insertProduct,getProductById,updateProduct, deleteProduct, getProductsByCategory };   
+export { getProducts,insertProduct,getProductById,updateProduct, deleteProduct, getFilterProducts };   

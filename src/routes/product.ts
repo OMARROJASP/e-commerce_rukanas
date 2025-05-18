@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { deleteProductController, getProductByIdController, getProductsController, saveProductController, updateProductController,getProductsByCategoryController } from "../controllers/product";
+import { deleteProductController, getProductByIdController, getProductsController, saveProductController, updateProductController,getProductsByFilterController } from "../controllers/product";
 import { uploadProductImage, resizeAndUploadImage } from "../middlewares/imageUploadMiddleware";
 import { authMiddleware } from '../middlewares/auth.middleware';
 
@@ -8,7 +8,7 @@ const router  = Router();
 
 //router.get("/",authMiddleware , getProductsController)
 router.get("/" , getProductsController)
-router.get("/filtroByCategory", getProductsByCategoryController)
+router.get("/filtro", getProductsByFilterController)
 router.post("/",uploadProductImage, resizeAndUploadImage ,saveProductController )
 router.get("/:id",getProductByIdController )
 router.put("/:id",uploadProductImage, resizeAndUploadImage ,updateProductController )
