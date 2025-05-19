@@ -51,11 +51,36 @@ const getFilterProducts = async (category?:string, min?:number, max?:number) => 
     } else if (max != null) {
         where.prod_price = Between(0, max);
     }
+    // 1. obtengo productos del filtro
+    const products = await productRepo.find({ where });
+    // 2. Obtener min y max de precio con filtros aplicados
+    const qb = productRepo.createQueryBuilder('product');
+    if (category) {
+        qb.andWhere('product.prod_category = :category', { category})
+    }
 
- 
+    if (min != null) {
+        qb.andWhere('product.prod_price >= :min', {min})
+    }
 
- 
-  return await productRepo.find({ where });
+    if (max != null){
+        qb.andWhere('product.prod_price <= :max', {max})
+    }
+
+
+    const { min: minPrice, max: maxPrice } = await qb
+        .select('MIN(product.prod_price)', 'min')
+        .addSelect('MAX(product.prod_price)', 'max')
+        .getRawOne();
+
+  
+        return {
+            products,
+            priceRange: {
+                min: Number(minPrice),
+                max: Number(maxPrice),
+            },
+        }
 };
 
 

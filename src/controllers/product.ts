@@ -139,9 +139,11 @@ const getProductsByFilterController = async (req: Request, res: Response, next: 
         max ? parseFloat(max as string) : undefined
     );
 
-    if (!responseProducts.length) {
+    if (!responseProducts.products.length) {
        res.status(404).json({ message: "No se encontraron productos para esta categoría" });
     }
+
+   
 
     res.status(200).json({ message: "LIST_PRODUCTS_BY_CATEGORY", data: responseProducts });
   } catch (e) {
