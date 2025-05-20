@@ -37,8 +37,11 @@ const deleteProduct = async (id:number) => {
 
 // Peticiones para filtrado de productos por categoria
 
-const getFilterProducts = async (category?:string, min?:number, max?:number) => {
+const getFilterProducts = async (category?:string, min?:number, max?:number, page:number = 1, limit:number = 10) => {
+    
+
     const where: any = {};
+
 
     if ( category ) {
         where.prod_category = Equal(category)
@@ -51,9 +54,21 @@ const getFilterProducts = async (category?:string, min?:number, max?:number) => 
     } else if (max != null) {
         where.prod_price = Between(0, max);
     }
+
+    const skip = (page - 1) * limit;
+
     // 1. obtengo productos del filtro
-    const products = await productRepo.find({ where });
-    // 2. Obtener min y max de precio con filtros aplicados
+    const totalItems = await productRepo.find({ where });
+
+    // 2. Productos Paginados
+    const products = await productRepo.find({
+        where, 
+        skip,
+        take: limit,
+        order: { prod_price: 'asc'}
+    }) 
+
+    // 3. Obtener min y max de precio con filtros aplicados
     const qb = productRepo.createQueryBuilder('product');
     if (category) {
         qb.andWhere('product.prod_category = :category', { category})
@@ -73,9 +88,15 @@ const getFilterProducts = async (category?:string, min?:number, max?:number) => 
         .addSelect('MAX(product.prod_price)', 'max')
         .getRawOne();
 
-  
+        // totalitems  es prosucts en el antiguo
         return {
             products,
+            pagination:{
+                totalItems,
+                currentPage: page,
+                totalPages: Math.ceil(Number(totalItems) / limit),
+                itemsPerPage: limit
+            },
             priceRange: {
                 min: Number(minPrice),
                 max: Number(maxPrice),

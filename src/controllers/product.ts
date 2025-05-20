@@ -125,7 +125,7 @@ const deleteProductController = async (req: Request, res:Response) => {
 
 const getProductsByFilterController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { category, min, max } = req.query;
+    const { category, min, max, page,limit } = req.query;
 
     // if (!category || typeof category !== "string") {
     //    res.status(400).json({ message: "Parámetro 'category' inválido o faltante" });
@@ -136,11 +136,14 @@ const getProductsByFilterController = async (req: Request, res: Response, next: 
     const responseProducts = await getFilterProducts(
         category as string,
         min ? parseFloat(min as string) : undefined,
-        max ? parseFloat(max as string) : undefined
+        max ? parseFloat(max as string) : undefined,
+        page ? parseInt(page as string) : 1,
+        limit ? parseInt(limit as string) : 10
     );
 
     if (!responseProducts.products.length) {
-       res.status(404).json({ message: "No se encontraron productos para esta categoría" });
+
+       res.status(404).json({ message: "No se encontraron productos para esta filtro", data: responseProducts });
     }
 
    
