@@ -94,7 +94,7 @@ const getFilterProducts = async (category?:string, min?:number, max?:number, pag
             pagination:{
                 totalItems,
                 currentPage: page,
-                totalPages: Math.ceil(Number(totalItems) / limit),
+                totalPages: Math.ceil(totalItems.length / limit),
                 itemsPerPage: limit
             },
             priceRange: {
