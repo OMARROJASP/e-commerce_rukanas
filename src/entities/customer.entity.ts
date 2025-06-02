@@ -32,9 +32,14 @@ export class CustomerEntity {
   @Column({ type: "varchar", length: 100 })
   cx_postal_code!: string;
 
+  // @OneToMany(() => CartItemEntity, item => item.user)
+  // cartItems!: CartItemEntity[]
+
   @OneToMany(() => OrderEntity, order => order.ord_customer)
-  @JoinColumn({ name: "ord_customer_id", referencedColumnName: "cx_id" })
-  orders!: OrderEntity[]; // Relación uno a muchos con OrderEntity
+  orders!: OrderEntity[];
+
+
+
 
   // Metodo para encriptar contraseña
   async hashPassword(): Promise<void>{

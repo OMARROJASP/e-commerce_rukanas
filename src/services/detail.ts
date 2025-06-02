@@ -2,29 +2,31 @@ import { DeepPartial } from "typeorm";
 import { AppDataSource } from "../config/conexion";
 import { OrderDetailEntity } from "../entities/orderDetail.entity";
 
-const orderRepository = AppDataSource.getRepository("OrderEntity");
+const orderDetailRepository  = AppDataSource.getRepository("OrderDetailEntity");
 
 // Renombramos aquí 👇
 
 const getAll = async () => {
-  return await orderRepository.find();
+  return await orderDetailRepository.find();
 };
 
 const getById = async(id: number) => {
-    return await orderRepository.findOneBy({ ord_id: id });
+    const response = await orderDetailRepository.findOneBy({ ord_det_id: id });
+    console.log("Response from getById:", response);
+    return response;
 }
 
 const create = async(data: DeepPartial<OrderDetailEntity>) => {
-    return await orderRepository.save(data);
+    return await orderDetailRepository.save(data);
 }
 
 const update  = async(data: DeepPartial<OrderDetailEntity>, id: number) => {   
-    const response = await orderRepository.update(id, data);
+    const response = await orderDetailRepository.update(id, data);
     return response;
 }
 
 const remove = async(id: number) => {
-    await orderRepository.delete(id);
+    await orderDetailRepository.delete(id);
     return { deleted: true };
 }
 

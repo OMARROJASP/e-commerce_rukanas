@@ -46,10 +46,21 @@ export class AuthController {
                 {expiresIn: "1h"}
             );
 
+            // creacion de los datos de user 
+      const dataUser = {
+        id_user: user.cx_id,
+        first_name: user.cx_first_name,
+        last_name:  user.cx_last_name,
+        phone: user.cx_phone,
+        address: user.cx_address,
+        city:user.cx_city,
+        postal_code: user.cx_postal_code,
+        email: user.cx_email,
+      }
+
             res.status(201).json({
-                userId: user.cx_id,
-                email: user.cx_email,
-                token,
+              dataUser: dataUser,
+              token,
             })
 
         }  catch (error) {
@@ -60,13 +71,13 @@ export class AuthController {
     
     login = async(req: Request, res: Response) : Promise<void>  => {
     try {
+      
       const {cx_email, cx_password } = req.body;
-
       // Verificar usuario
       const user = await this.userRepository.findOne({ where: { cx_email } });
       if (!user) {
-         res.status(401).json({ message: "Credenciales inválidas" });
-         return;
+        res.status(401).json({ message: "Credenciales inválidas" });
+        return;
       }
 
       // Verificar contraseña
@@ -82,9 +93,20 @@ export class AuthController {
         { expiresIn: "1h" }
       );
 
-      res.status(200).json({
-        userId: user.cx_id,
+      // creacion de los datos de user 
+      const dataUser = {
+        id_user: user.cx_id,
+        first_name: user.cx_first_name,
+        last_name:  user.cx_last_name,
+        phone: user.cx_phone,
+        address: user.cx_address,
+        city:user.cx_city,
+        postal_code: user.cx_postal_code,
         email: user.cx_email,
+      }
+
+      res.status(200).json({
+        dataUser: dataUser,
         token,
       });
     } catch (error) {

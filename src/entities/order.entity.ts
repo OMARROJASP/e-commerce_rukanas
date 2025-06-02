@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { CustomerEntity } from "./customer.entity";
 import { OrderDetailEntity } from "./orderDetail.entity";
 
@@ -13,9 +13,9 @@ export class OrderEntity {
     @Column()
     ord_status!: string; // Estado del pedido (ej. "Pendiente", "Enviado", "Entregado")
 
-    @ManyToOne(() => CustomerEntity, customer => customer.orders)
-    ord_customer!: CustomerEntity; // Relación muchos a uno con CustomerEntity
-
-    @OneToMany(() => OrderDetailEntity, orderDetail => orderDetail.ord_det_order)
+   @ManyToOne(() => CustomerEntity, customer => customer.orders)
+    @JoinColumn({ name: "ord_customer" }) // Opcionalmente puedes especificar el nombre si quieres un FK claro
+    ord_customer!: CustomerEntity;
+    @OneToMany(() => OrderDetailEntity, orderDetail => orderDetail.ord_det_order, { cascade: true})
     orderDetails!: OrderDetailEntity[]; // Relación uno a muchos con OrderDetailEntity
 }

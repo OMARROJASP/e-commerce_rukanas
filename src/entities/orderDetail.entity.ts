@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { OrderEntity } from "./order.entity";
 import { ProductEntity } from "./product.entity";
 
@@ -7,10 +7,18 @@ export class OrderDetailEntity{
     @PrimaryGeneratedColumn()
     ord_det_id!: number; // ID del detalle del pedido (clave primaria)
 
-    @ManyToOne(() => OrderEntity, order => order.orderDetails)
+    @Column()
+    ord_det_order_id!: number;
+
+    @ManyToOne(() => OrderEntity, order => order.orderDetails,{ onDelete: 'CASCADE' })
+    @JoinColumn({ name: "ord_det_order_id" })
     ord_det_order!: OrderEntity; // Relación muchos a uno con OrderEntity
 
+    @Column()
+    ord_det_product_id!: number;
+
     @ManyToOne(() => ProductEntity, product => product.prod_id)
+    @JoinColumn({ name: "ord_det_product_id" })
     ord_det_product!: ProductEntity; // Relación muchos a uno con ProductEntity
     
     @Column()
@@ -19,7 +27,9 @@ export class OrderDetailEntity{
     @Column({type: "decimal", precision: 10, scale: 2})   
     ord_det_unit_price!: number; // Precio del producto en el detalle del pedido
 
-    @Column()
+    @Column({ default: 0 })
     ord_det_discount!: number; // Precio total del detalle del pedido (cantidad * precio unitario)
 
+    @Column({ type: "decimal", precision: 10, scale: 2 })
+    ord_det_subtotal!: number;
 }

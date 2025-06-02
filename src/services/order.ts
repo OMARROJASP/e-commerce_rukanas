@@ -2,7 +2,7 @@ import { DeepPartial } from "typeorm";
 import { AppDataSource } from "../config/conexion";
 import { OrderEntity } from "../entities/order.entity";
 
-const orderRepository = AppDataSource.getRepository("OrderEntity");
+const orderRepository = AppDataSource.getRepository(OrderEntity);
 
 // Renombramos aquí 👇
 
