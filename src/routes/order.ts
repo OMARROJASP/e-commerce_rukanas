@@ -5,12 +5,11 @@ import {
     saveOrderController,
     updateOrderController,
     deleteOrderController,
+    getProductByOrderByIdController
 } from "../controllers/Order"
 
 const router = Router();
-
-
-
+router.get("/:id/full", getProductByOrderByIdController);
 router.get("/", getOrdersController);
 router.get("/:id", getOrderByIdController);
 router.post("/", saveOrderController);

@@ -28,5 +28,15 @@ const remove = async(id: number) => {
     return { deleted: true };
 }
 
+const getFullOrderByCustomerId = async (customerId: number) => {
+  const order = await orderRepository.findOne({
+    where: { ord_customer: { cx_id: customerId } },
+    relations: ['orderDetails', 'orderDetails.ord_det_product']
+  });
+  console.log('Order details:', order);
+  return order;
+};
+
+
 // 👇 Exportamos con los nombres que espera el controlador genérico
-export { getAll, getById, create, update, remove };
+export { getAll, getById, create, update, remove,getFullOrderByCustomerId };
