@@ -16,14 +16,23 @@ export const authMiddleware = async (
   res: Response, 
   next: NextFunction
   ): Promise<void> => {
-  // 1. Verificar cabecera de autorización
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith('Bearer ')){
-    res.status(401).json({message: "Formato de token inválido. Use 'Bearer <Token>'"});
-    return;
-  }
+  // 1. Verificar cabecera de autorización SI utilizas cuando nos envian el token por authorization
+  // const authHeader = req.headers.authorization;
+  // if (!authHeader?.startsWith('Bearer ')){
+  //   res.status(401).json({message: "Formato de token inválido. Use 'Bearer <Token>'"});
+  //   return;
+  // }
 
-  const token = authHeader.split(' ')[1];
+  // const token = authHeader.split(' ')[1];
+
+// 1. Verificar cabecera de autorización cuando nos envia el token por cookie
+
+  const token = req.cookies.token;
+if (!token) {
+  res.status(401).json({message: 'No autenticado'})
+  return
+}
+
   try{
     // 2. Verificar token JWT
     const decoded = jwt.verify(token, JWT_SECRET_KEY) as { userId: number };

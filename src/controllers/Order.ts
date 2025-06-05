@@ -18,8 +18,7 @@ export const getProductByOrderByIdController = async (req: Request, res: Respons
         if (!order) {
             res.status(404).json({ message: "No se encontro ordenes" });
             return 
-        }
-        console.log('aQUI ESTA EL DATO', order);
+        } 
         res.status(200).json({ message: "Cliente encontrado", data: order });
     } catch (e) {
         console.error(e);

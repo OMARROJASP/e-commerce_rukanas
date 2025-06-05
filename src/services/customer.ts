@@ -11,7 +11,20 @@ const getAll = async () => {
 };
 
 const getById = async (id: number) => {
-  return await customerRepo.findOneBy({ cx_id: id });
+ return await customerRepo.findOne({
+    where: { cx_id: id },
+    select: {
+      cx_id: true,
+      cx_first_name: true,
+      cx_last_name:true,
+      cx_phone: true,
+      cx_address: true,
+      cx_city: true,
+      cx_postal_code: true,
+      cx_email: true,
+      // cx_password no lo incluyes
+    }
+  });
 };
 
 const create = async (data: DeepPartial<CustomerEntity>) => {

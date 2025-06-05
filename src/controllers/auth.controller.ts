@@ -84,6 +84,7 @@ export class AuthController {
       const isMatch = await user.comparePassword(cx_password);
       if (!isMatch) {
         res.status(401).json({ message: "Credenciales inválidas" });
+        return;
       }
 
       // Generar token JWT
@@ -94,21 +95,33 @@ export class AuthController {
       );
 
       // creacion de los datos de user 
-      const dataUser = {
-        id_user: user.cx_id,
-        first_name: user.cx_first_name,
-        last_name:  user.cx_last_name,
-        phone: user.cx_phone,
-        address: user.cx_address,
-        city:user.cx_city,
-        postal_code: user.cx_postal_code,
-        email: user.cx_email,
-      }
+      // const dataUser = {
+      //   id_user: user.cx_id,
+      //   first_name: user.cx_first_name,
+      //   last_name:  user.cx_last_name,
+      //   phone: user.cx_phone,
+      //   address: user.cx_address,
+      //   city:user.cx_city,  
+      //   postal_code: user.cx_postal_code,
+      //   email: user.cx_email,
+      // }
 
-      res.status(200).json({
-        dataUser: dataUser,
-        token,
-      });
+      // Enviar respuesta de datos de usuario y token pero por cookies
+      res.cookie('token', token, {
+        httpOnly: true, // Evita acceso desde JavaScript
+        secure: process.env.NODE_ENV === 'production', // Solo enviar por HTTPS en producciónsa
+        sameSite: 'lax', // Evita envío en solicitudes de terceros
+        maxAge: 60*60*1000 // 1 hora en milisegundos
+      })
+      .status(200)
+      .json({ message: "Login exitoso" });
+
+
+      // Enviar respuesta de datos de usuario y token pero para localStorage
+      // res.status(200).json({
+      //   dataUser: dataUser,
+      //   token,
+      // });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Error al iniciar sesión" });
