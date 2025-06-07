@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { authMiddleware } from '../middlewares/auth.middleware';
 import {
     getOrdersController,
     getOrderByIdController,
@@ -9,7 +10,7 @@ import {
 } from "../controllers/Order"
 
 const router = Router();
-router.get("/:id/full", getProductByOrderByIdController);
+router.get("/full",authMiddleware, getProductByOrderByIdController); //: el id del usuaeio ya viene en el token
 router.get("/", getOrdersController);
 router.get("/:id", getOrderByIdController);
 router.post("/", saveOrderController);
