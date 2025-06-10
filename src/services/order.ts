@@ -30,7 +30,10 @@ const remove = async(id: number) => {
 
 const getFullOrderByCustomerId = async (customerId: number) => {
   const order = await orderRepository.findOne({
-    where: { ord_customer: { cx_id: customerId } },
+    where: {
+      ord_customer: { cx_id: customerId },
+      ord_status: 'CREATED'
+  },
     relations: ['orderDetails', 'orderDetails.ord_det_product']
   });
   console.log('Order details:', order);

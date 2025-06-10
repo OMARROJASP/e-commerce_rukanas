@@ -19,10 +19,18 @@ export const getProductByOrderByIdController = async (req: AuthenticatedRequest,
             return;
         }
 
-        const idNumber = parseInt(user.cx_id.toString(), 10);
-        const order = await orderService.getFullOrderByCustomerId(idNumber);
+        const customerId  = parseInt(user.cx_id.toString(), 10);
+        let order = await orderService.getFullOrderByCustomerId(customerId );
         if (!order) {
-            res.status(404).json({ message: "No se encontro ordenes" });
+        // Crear una nueva orden si no existe una con status CREATED
+        order = await orderService.create({
+            ord_status: "CREATED",
+            ord_customer: {
+                cx_id: customerId
+            }
+        });
+
+            res.status(200).json({ message: "Orden cargada correctamente", data: order });
             return 
         } 
         res.status(200).json({ message: "Cliente encontrado", data: order });
