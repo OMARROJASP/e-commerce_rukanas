@@ -36,7 +36,6 @@ const getFullOrderByCustomerId = async (customerId: number) => {
   },
     relations: ['orderDetails', 'orderDetails.ord_det_product']
   });
-  console.log('Order details:', order);
   return order;
 };
 
