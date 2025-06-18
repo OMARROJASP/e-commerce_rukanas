@@ -39,3 +39,17 @@ export const getProductByOrderByIdController = async (req: AuthenticatedRequest,
         res.status(500).json({ message: "Error interno del servidor" });
     }
 }
+
+
+// Para la plataforma de Admin
+export const getAllOrderAndCustomer = async (req: Request, res: Response) => {
+
+    try {
+        let orders = await orderService.getInfoOrderAndCustomerId();
+        res.status(200).json({ message: "Orden cargada correctamente", data: orders });
+        return 
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error interno del servidor" });
+    }
+}

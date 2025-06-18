@@ -6,10 +6,13 @@ import {
     saveOrderController,
     updateOrderController,
     deleteOrderController,
-    getProductByOrderByIdController
+    getProductByOrderByIdController,
+    getAllOrderAndCustomer
+
 } from "../controllers/Order"
 
 const router = Router();
+router.get("/all",getAllOrderAndCustomer)
 router.get("/full",authMiddleware, getProductByOrderByIdController); //: el id del usuaeio ya viene en el token
 router.get("/", getOrdersController);
 router.get("/:id", getOrderByIdController);

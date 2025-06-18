@@ -39,6 +39,13 @@ const getFullOrderByCustomerId = async (customerId: number) => {
   return order;
 };
 
+const getInfoOrderAndCustomerId = async () => {
+    return await orderRepository.find({
+      relations: ['ord_customer'] }      
+    );
+}
+
+
 
 // 👇 Exportamos con los nombres que espera el controlador genérico
-export { getAll, getById, create, update, remove,getFullOrderByCustomerId };
+export { getAll, getById, create, update, remove,getFullOrderByCustomerId, getInfoOrderAndCustomerId };

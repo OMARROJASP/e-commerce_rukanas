@@ -5,12 +5,13 @@ import {
     saveDetailController,
     updateDetailController,
     deleteDetailController,
+    getAllOrderByOrder
 } from "../controllers/details"
 
 const router = Router();
 
 
-
+router.get("/admin/full", getAllOrderByOrder)
 router.get("/", getDetailsController);
 router.get("/:id", getDetailByIdController);
 router.post("/", saveDetailController);

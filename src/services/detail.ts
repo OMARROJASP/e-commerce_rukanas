@@ -29,6 +29,16 @@ const remove = async(id: number) => {
     await orderDetailRepository.delete(id);
     return { deleted: true };
 }
+// Para la plataforma de Admin
+
+const getAllByOrder = async (id: number) => {
+  return await orderDetailRepository.find({ 
+    where: {
+        ord_det_order_id: id
+    }
+   });
+};
+
 
 // 👇 Exportamos con los nombres que espera el controlador genérico
-export { getAll, getById, create, update, remove };
+export { getAll, getById, create, update, remove, getAllByOrder };
