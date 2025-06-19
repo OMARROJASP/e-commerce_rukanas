@@ -53,3 +53,15 @@ export const getAllOrderAndCustomer = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Error interno del servidor" });
     }
 }
+
+export const getAllOrderById = async (req: Request, res: Response) => {
+    try {
+        const id = parseInt(req.params.id);
+        let orders = await orderService.getAllOrderByCustomerId(id);
+        res.status(200).json({message: "Ordenes cargado correctamente", data: orders})
+        return 
+    }catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error interno del servidor" });
+    }
+}

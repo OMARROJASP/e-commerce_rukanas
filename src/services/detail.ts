@@ -35,7 +35,8 @@ const getAllByOrder = async (id: number) => {
   return await orderDetailRepository.find({ 
     where: {
         ord_det_order_id: id
-    }
+    },
+        relations: ['ord_det_product']  
    });
 };
 

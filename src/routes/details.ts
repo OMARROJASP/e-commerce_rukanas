@@ -11,7 +11,7 @@ import {
 const router = Router();
 
 
-router.get("/admin/full", getAllOrderByOrder)
+router.get("/admin/full/:id", getAllOrderByOrder)
 router.get("/", getDetailsController);
 router.get("/:id", getDetailByIdController);
 router.post("/", saveDetailController);
