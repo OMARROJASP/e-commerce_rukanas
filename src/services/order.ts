@@ -56,7 +56,32 @@ const getAllOrderByCustomerId = async (customerId: number) => {
   })
 }
 
+const getOrderByDay = async () => {
+
+  const fromDate = new Date();
+  fromDate.setDate(fromDate.getDate() - 10);
+
+  const result = await orderRepository
+    .createQueryBuilder("order")
+    .select("DATE(order.ord_date)", "date")
+    .addSelect("COUNT(*)", "total")
+    .where("order.ord_status = :status", { status: 'CREATED' })
+    .andWhere("order.ord_date >= :fromDate", { fromDate })
+    .groupBy("DATE(order.ord_date)")
+    .orderBy("DATE(order.ord_date)", "ASC") // orden ascendente para mostrar en gráfica
+    .getRawMany();
+
+
+
+  const formatted = result.map(row => ({
+    date: row.date,
+    total: Number(row.total),
+  }))  
+
+  return formatted
+}
+
 
 
 // 👇 Exportamos con los nombres que espera el controlador genérico
-export { getAll, getById, create, update, remove,getFullOrderByCustomerId, getInfoOrderAndCustomerId, getAllOrderByCustomerId };
+export { getAll, getById, create, update, remove,getFullOrderByCustomerId, getInfoOrderAndCustomerId, getAllOrderByCustomerId, getOrderByDay};

@@ -8,12 +8,14 @@ import {
     deleteOrderController,
     getProductByOrderByIdController,
     getAllOrderAndCustomer,
-    getAllOrderById
+    getAllOrderById,
+    getAllOrderByDays
 
 } from "../controllers/Order"
 
 const router = Router();
-router.get("/all/:id",getAllOrderById)
+router.get("/all/:id",getAllOrderById) // para admin
+router.get("/all-day",getAllOrderByDays) // para admin
 router.get("/all",getAllOrderAndCustomer)
 router.get("/full",authMiddleware, getProductByOrderByIdController); //: el id del usuaeio ya viene en el token
 router.get("/", getOrdersController);
