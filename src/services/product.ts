@@ -1,12 +1,24 @@
-import { Between, Equal } from "typeorm";
+import { Between, Equal, IsNull } from "typeorm";
 import { AppDataSource } from "../config/conexion";
 import { ProductEntity } from "../entities/product.entity";
 import { Product } from "../interface/product.interface";
+import { MoreThan } from "typeorm";
 
 const productRepo = AppDataSource.getRepository(ProductEntity);
 
 const getProducts = async () => {
     const response = await productRepo.find();
+   return response;
+}
+
+const getProductsByOfert = async () => {
+    const response = await productRepo.find(
+        {
+             where: {
+      prod_ofert: MoreThan(0),
+    },
+        }
+    );
    return response;
 }
 
@@ -105,4 +117,4 @@ const getFilterProducts = async (category?:string, min?:number, max?:number, pag
 };
 
 
-export { getProducts,insertProduct,getProductById,updateProduct, deleteProduct, getFilterProducts };   
+export { getProducts,insertProduct,getProductById,updateProduct, deleteProduct, getFilterProducts, getProductsByOfert };   

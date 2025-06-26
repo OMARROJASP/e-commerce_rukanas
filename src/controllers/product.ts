@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { getProducts, insertProduct,getProductById, updateProduct, deleteProduct, getFilterProducts } from "../services/product";
+import { getProducts, insertProduct,getProductById, updateProduct, deleteProduct, getFilterProducts, getProductsByOfert } from "../services/product";
 import { Product } from "../interface/product.interface";
 import { cloudinary } from "../config/cloudinaryConfig";
 
@@ -8,6 +8,17 @@ const getProductsController = async (req: Request, res:Response) => {
     try{
       const  responseProducts = await getProducts();
       const data = responseProducts ? responseProducts : "No hay productos";
+      res.send({message: "GET_ALL_PRODUCTS", data: data});
+
+    }catch(e){
+        console.log(e)
+    }
+}
+
+const getProductsByOfertController = async (req: Request, res:Response) => {
+    try{
+      const  responseProducts = await getProductsByOfert();
+      const data = responseProducts ? responseProducts : "No hay productos con ofertas";
       res.send({message: "GET_ALL_PRODUCTS", data: data});
 
     }catch(e){
@@ -48,7 +59,8 @@ const saveProductController = async (req: Request, res:Response, next: NextFunct
             prod_stock: req.body.prod_stock,
             prod_imageUrl: mainImageUrl,
             prod_category: req.body.prod_category,
-            prod_supplier: req.body.prod_supplier
+            prod_supplier: req.body.prod_supplier,
+            prod_ofert: req.body.prod_ofert
         };
         // Insertar en la base de datos
         const responseProducts = await insertProduct(productData);
@@ -98,6 +110,7 @@ const updateProductController = async (req: Request, res:Response) => {
             prod_stock: req.body.prod_stock,
             prod_imageUrl: mainImageUrl,
             prod_supplier: req.body.prod_supplier,
+            prod_ofert: req.body.prod_ofert,
             prod_category: req.body.prod_category || existingProduct.prod_category // Añade la categoría
         };
 
@@ -160,4 +173,4 @@ function extractPublicId(imageUrl: string): string {
   return matches ? matches[1] : '';
 }
 
-export { getProductsController, saveProductController,getProductByIdController, updateProductController, deleteProductController,getProductsByFilterController};
+export { getProductsController, saveProductController,getProductByIdController, updateProductController, deleteProductController,getProductsByFilterController, getProductsByOfertController};

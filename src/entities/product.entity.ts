@@ -27,6 +27,9 @@ export class ProductEntity {
   prod_stock!: number;
 
   @Column()
+  prod_ofert!: number; // debe estar en porcentaje
+
+  @Column()
   prod_supplier!: string;
 
   @ManyToOne(() => CategoryEntity, category => category.products)

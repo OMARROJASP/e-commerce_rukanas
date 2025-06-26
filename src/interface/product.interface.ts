@@ -6,5 +6,6 @@ export interface Product {
     prod_category: string;
     prod_stock: number;
     prod_supplier: string;
+    prod_ofert: number;
 }
 

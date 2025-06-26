@@ -61,6 +61,8 @@ const getOrderByDay = async () => {
   const fromDate = new Date();
   fromDate.setDate(fromDate.getDate() - 10);
 
+
+
   const result = await orderRepository
     .createQueryBuilder("order")
     .select("DATE(order.ord_date)", "date")
@@ -78,7 +80,7 @@ const getOrderByDay = async () => {
     total: Number(row.total),
   }))  
 
-  return formatted
+  return formatted;
 }
 
 

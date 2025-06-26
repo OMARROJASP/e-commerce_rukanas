@@ -14,8 +14,9 @@ import {
 } from "../controllers/Order"
 
 const router = Router();
+
+router.get("/allday",getAllOrderByDays) // para admin
 router.get("/all/:id",getAllOrderById) // para admin
-router.get("/all-day",getAllOrderByDays) // para admin
 router.get("/all",getAllOrderAndCustomer)
 router.get("/full",authMiddleware, getProductByOrderByIdController); //: el id del usuaeio ya viene en el token
 router.get("/", getOrdersController);
