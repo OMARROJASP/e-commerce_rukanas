@@ -49,7 +49,7 @@ const deleteProduct = async (id:number) => {
 
 // Peticiones para filtrado de productos por categoria
 
-const getFilterProducts = async (category?:string, min?:number, max?:number, page:number = 1, limit:number = 10) => {
+const getFilterProducts = async (category?:string, min?:number, max?:number, page:number = 1, limit:number = 10, ofert:boolean = false) => {
     
 
     const where: any = {};
@@ -57,6 +57,9 @@ const getFilterProducts = async (category?:string, min?:number, max?:number, pag
 
     if ( category ) {
         where.prod_category = Equal(category)
+    }
+    if ( ofert ) {
+        where.prod_ofert =  MoreThan(0)
     }
 
     if ( min != null && max != null ){
