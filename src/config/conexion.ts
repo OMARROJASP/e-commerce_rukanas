@@ -5,6 +5,7 @@ import { CategoryEntity } from "../entities/category.entity";
 import { OrderEntity } from "../entities/order.entity";
 import { SupplierEntity } from "../entities/supplier.entity";
 import { OrderDetailEntity } from "../entities/orderDetail.entity";
+import { BannerEntity } from "../entities/banner.entity";
 
 
 export const AppDataSource = new DataSource({
@@ -16,7 +17,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: true,
     logging: false,
-    entities: [CustomerEntity, ProductEntity,CategoryEntity, OrderEntity, SupplierEntity, OrderDetailEntity],
+    entities: [CustomerEntity, ProductEntity,CategoryEntity, OrderEntity, SupplierEntity, OrderDetailEntity, BannerEntity],
     migrations: [],
     subscribers: [],
 })

@@ -65,11 +65,11 @@ const saveProductController = async (req: Request, res:Response, next: NextFunct
         // Insertar en la base de datos
         const responseProducts = await insertProduct(productData);
        res.status(201).json({
-            message: "Categoría creada exitosamente",
+            message: "producto creada exitosamente",
             data: responseProducts
         });
     }catch(e){
-         console.error("Error al guardar categoría:", e);
+         console.error("Error al guardar producto:", e);
     }
 }
 
@@ -77,11 +77,11 @@ const updateProductController = async (req: Request, res:Response) => {
     try{
         const { id } = req.params;
         const idNumber = parseInt(id);
-        // 1. Verificar si la categoría existe
+        // 1. Verificar si la producto existe
         const existingProduct = await getProductById(idNumber);
         if(!existingProduct){
             res.status(404).json({
-                message: "Categoria no encontrada"
+                message: "Producto no encontrada"
             });
             return;
         }
@@ -111,12 +111,12 @@ const updateProductController = async (req: Request, res:Response) => {
             prod_imageUrl: mainImageUrl,
             prod_supplier: req.body.prod_supplier,
             prod_ofert: req.body.prod_ofert,
-            prod_category: req.body.prod_category || existingProduct.prod_category // Añade la categoría
+            prod_category: req.body.prod_category || existingProduct.prod_category // Añade la producto
         };
 
         const responseProducts = await updateProduct(productData, idNumber);
         res.status(200).json({
-            message: "Categoria actualizada exitosamente",
+            message: "Producto actualizado exitosamente",
             data: responseProducts,
         })
     }catch(e){  
@@ -162,7 +162,7 @@ const getProductsByFilterController = async (req: Request, res: Response, next: 
 
    
 
-    res.status(200).json({ message: "LIST_PRODUCTS_BY_CATEGORY", data: responseProducts });
+    res.status(200).json({ message: "LIST_PRODUCTS_BY_producto", data: responseProducts });
   } catch (e) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
