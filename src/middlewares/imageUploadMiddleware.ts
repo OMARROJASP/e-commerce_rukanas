@@ -51,26 +51,26 @@ const resizeAndUploadImage = async (req: Request, res: Response, next: NextFunct
 };
 
 
-// const resizeAndUploadImage = async (req: Request, res: Response, next: NextFunction) => {
-//     if (!req.files || req.files.length === 0) return next();
+const resizeAndUploadImage1 = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.files || req.files.length === 0) return next();
 
-//     try {
-//         const uploadPromises = (req.files as Express.Multer.File[]).map(file => 
-//             uploadToCloudinary(file.buffer, {
-//                 transformation: [
-//                     { width: 500, height: 500, crop: 'limit' },
-//                 ]
-//             })
-//         );
+    try {
+        const uploadPromises = (req.files as Express.Multer.File[]).map(file => 
+            uploadToCloudinary(file.buffer, {
+                transformation: [
+                    { width: 500, height: 500, crop: 'limit' },
+                ]
+            })
+        );
         
-//         const results = await Promise.all(uploadPromises);
-//         req.body.imageUrls = results.map((result: any) => result.secure_url);
-//         next();
-//     } catch (error) {
-//         console.error('Error subiendo imagen:', error);
-//         res.status(500).json({ error: 'Error subiendo imagen' });
-//     }
-// };
+        const results = await Promise.all(uploadPromises);
+        req.body.imageUrls = results.map((result: any) => result.secure_url);
+        next();
+    } catch (error) {
+        console.error('Error subiendo imagen:', error);
+        res.status(500).json({ error: 'Error subiendo imagen' });
+    }
+};
 
 const createUploaderForBanner = () => {
   return multer({
@@ -93,4 +93,4 @@ const createUploaderForBanner = () => {
 export const uploadCategoryImage = createUploader('cat_imageUrl', 1);
 export const uploadProductImage = createUploader('prod_imageUrl', 1);
 export const uploadBannerImage = () => createUploaderForBanner();
-export { resizeAndUploadImage };
+export { resizeAndUploadImage, resizeAndUploadImage1 };
