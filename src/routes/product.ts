@@ -10,7 +10,7 @@ const router  = Router();
 router.get("/" , getProductsController)
 router.get("/all" , getProductsByOfertController)
 router.get("/filtro", getProductsByFilterController)
-router.post("/",resizeAndUploadImage1, resizeAndUploadImage ,saveProductController )
+router.post("/",uploadProductImage, resizeAndUploadImage1 ,saveProductController )
 router.get("/:id",getProductByIdController )
 router.put("/:id",uploadProductImage, resizeAndUploadImage ,updateProductController )
 router.delete("/:id",deleteProductController )

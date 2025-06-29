@@ -62,7 +62,7 @@ const resizeAndUploadImage1 = async (req: Request, res: Response, next: NextFunc
                 ]
             })
         );
-        
+
         const results = await Promise.all(uploadPromises);
         req.body.imageUrls = results.map((result: any) => result.secure_url);
         next();
@@ -70,7 +70,7 @@ const resizeAndUploadImage1 = async (req: Request, res: Response, next: NextFunc
         console.error('Error subiendo imagen:', error);
         res.status(500).json({ error: 'Error subiendo imagen' });
     }
-};
+  }
 
 const createUploaderForBanner = () => {
   return multer({
