@@ -10,7 +10,7 @@ const router  = Router();
 router.get("/" , getBannerController)
 router.post("/",uploadBannerImage(), resizeAndUploadImage ,saveBannerController )
 router.get("/:id",getBannerByIdController )
-router.put("/:id",uploadProductImage, resizeAndUploadImage ,updateBannerController )
+router.put("/:id",uploadBannerImage(), resizeAndUploadImage ,updateBannerController )
 router.delete("/:id",deleteBannerController )
 
 export { router  }; 

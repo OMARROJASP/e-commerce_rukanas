@@ -15,8 +15,7 @@ const getById = async (id:number) => {
     return response;
 }
 
-const create = async (data: DeepPartial<BannerEntity>) => {
-    console.log('Ingreso a service')
+const create = async (data: DeepPartial<BannerEntity>) => { 
     const response = await bannerRepo.save(data);
     return response;
 }
