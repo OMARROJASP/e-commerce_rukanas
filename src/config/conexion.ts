@@ -10,11 +10,11 @@ import { BannerEntity } from "../entities/banner.entity";
 
 export const AppDataSource = new DataSource({
     type: "mysql",
-    host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT || "3306"),
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: process.env.DB_HOST || "localhost",
+    port: parseInt(process.env.DB_PORT || '3306'),
+    username: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "example",
+    database: process.env.DB_NAME || "ecommerce",
     synchronize: true,
     logging: false,
     entities: [CustomerEntity, ProductEntity,CategoryEntity, OrderEntity, SupplierEntity, OrderDetailEntity, BannerEntity],
