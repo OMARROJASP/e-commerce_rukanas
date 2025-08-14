@@ -1,8 +1,9 @@
-import { Between, Equal, IsNull } from "typeorm";
+import { Between, Equal, IsNull, Like } from "typeorm";
 import { AppDataSource } from "../config/conexion";
 import { ProductEntity } from "../entities/product.entity";
 import { Product } from "../interface/product.interface";
 import { MoreThan } from "typeorm";
+import { equal } from "assert";
 
 const productRepo = AppDataSource.getRepository(ProductEntity);
 
@@ -49,7 +50,7 @@ const deleteProduct = async (id:number) => {
 
 // Peticiones para filtrado de productos por categoria
 
-const getFilterProducts = async (category?:string, min?:number, max?:number, page:number = 1, limit:number = 10, ofert:boolean = false) => {
+const getFilterProducts = async (category?:string, min?:number, max?:number, page:number = 1, limit:number = 10, ofert:boolean = false, text?: string) => {
     
 
     const where: any = {};
@@ -68,6 +69,11 @@ const getFilterProducts = async (category?:string, min?:number, max?:number, pag
         where.prod_price = Between(min, Number.MAX_SAFE_INTEGER);
     } else if (max != null) {
         where.prod_price = Between(0, max);
+    }
+
+    // para busqueda de texto
+    if (text) {
+           where.prod_name = Like(`%${text}%`);
     }
 
     const skip = (page - 1) * limit;
@@ -95,6 +101,9 @@ const getFilterProducts = async (category?:string, min?:number, max?:number, pag
 
     if (max != null){
         qb.andWhere('product.prod_price <= :max', {max})
+    }
+      if (text) {
+        qb.andWhere('product.prod_name = :text', { text})
     }
 
 

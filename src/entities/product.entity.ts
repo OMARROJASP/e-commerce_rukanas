@@ -32,6 +32,9 @@ export class ProductEntity {
   @Column()
   prod_supplier!: string;
 
+   @Column()
+  prod_state!: boolean;
+
   @ManyToOne(() => CategoryEntity, category => category.products)
   category!: CategoryEntity; // Relación muchos a uno con CategoryEntity
 

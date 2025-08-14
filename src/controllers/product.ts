@@ -60,10 +60,12 @@ const saveProductController = async (req: Request, res:Response, next: NextFunct
             prod_imageUrl: mainImageUrl,
             prod_category: req.body.prod_category,
             prod_supplier: req.body.prod_supplier,
-            prod_ofert: req.body.prod_ofert
+            prod_ofert: req.body.prod_ofert,
+            prod_state: req.body.prod_state || true // Añadir el estado del producto, por defecto true
         };
         // Insertar en la base de datos
         const responseProducts = await insertProduct(productData);
+        
        res.status(201).json({
             message: "producto creada exitosamente",
             data: responseProducts
@@ -111,7 +113,8 @@ const updateProductController = async (req: Request, res:Response) => {
             prod_imageUrl: mainImageUrl,
             prod_supplier: req.body.prod_supplier,
             prod_ofert: req.body.prod_ofert,
-            prod_category: req.body.prod_category || existingProduct.prod_category // Añade la producto
+            prod_category: req.body.prod_category || existingProduct.prod_category, // Añade la producto
+            prod_state: req.body.prod_state || true
         };
 
         const responseProducts = await updateProduct(productData, idNumber);
@@ -138,7 +141,7 @@ const deleteProductController = async (req: Request, res:Response) => {
 
 const getProductsByFilterController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { category, min, max, page,limit, ofert } = req.query;
+    const { category, min, max, page,limit, ofert, text } = req.query;
 
     // if (!category || typeof category !== "string") {
     //    res.status(400).json({ message: "Parámetro 'category' inválido o faltante" });
@@ -152,12 +155,14 @@ const getProductsByFilterController = async (req: Request, res: Response, next: 
         max ? parseFloat(max as string) : undefined,
         page ? parseInt(page as string) : 1,
         limit ? parseInt(limit as string) : 10,
-        ofert ?  true : false
+        ofert ?  true : false,
+        text as string
     ); 
 
     if (!responseProducts.products.length) {
 
        res.status(404).json({ message: "No se encontraron productos para esta filtro", data: responseProducts });
+       return
     }
 
    
