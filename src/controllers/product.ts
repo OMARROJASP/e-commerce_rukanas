@@ -113,9 +113,11 @@ const updateProductController = async (req: Request, res:Response) => {
             prod_imageUrl: mainImageUrl,
             prod_supplier: req.body.prod_supplier,
             prod_ofert: req.body.prod_ofert,
-            prod_category: req.body.prod_category || existingProduct.prod_category, // Añade la producto
-            prod_state: req.body.prod_state || true
+            prod_category: req.body.prod_category || existingProduct.prod_category, 
+            prod_state: req.body.prod_state == '1'? true : false || true
         };
+
+        console.log("DATOS DEL PRODUCTO A ACTUALIZAR: ", productData)
 
         const responseProducts = await updateProduct(productData, idNumber);
         res.status(200).json({
