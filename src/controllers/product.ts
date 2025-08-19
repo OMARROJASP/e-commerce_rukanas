@@ -61,7 +61,8 @@ const saveProductController = async (req: Request, res:Response, next: NextFunct
             prod_category: req.body.prod_category,
             prod_supplier: req.body.prod_supplier,
             prod_ofert: req.body.prod_ofert,
-            prod_state: req.body.prod_state || true // Añadir el estado del producto, por defecto true
+            prod_state: req.body.prod_state ? req.body.prod_state === '1' : true
+ // Añadir el estado del producto, por defecto true
         };
         // Insertar en la base de datos
         const responseProducts = await insertProduct(productData);
@@ -114,18 +115,26 @@ const updateProductController = async (req: Request, res:Response) => {
             prod_supplier: req.body.prod_supplier,
             prod_ofert: req.body.prod_ofert,
             prod_category: req.body.prod_category || existingProduct.prod_category, 
-            prod_state: req.body.prod_state == '1'? true : false || true
+            prod_state: req.body.prod_state ? req.body.prod_state === '1' : true
+
         };
 
         console.log("DATOS DEL PRODUCTO A ACTUALIZAR: ", productData)
 
         const responseProducts = await updateProduct(productData, idNumber);
         res.status(200).json({
+            success: true,
             message: "Producto actualizado exitosamente",
             data: responseProducts,
         })
     }catch(e){  
         console.log(e)
+        //  res.status(404).json({
+        //     success: false,
+        //     message: "No se encontró el producto con ese ID",
+        //     errors: ["Producto no existe en la base de datos"]
+        // })
+
     }
 }
 
@@ -135,7 +144,7 @@ const deleteProductController = async (req: Request, res:Response) => {
         const idNumber = parseInt(id);
         const responseProducts = await deleteProduct(idNumber);
         const data = responseProducts ? responseProducts : "No se pudo eliminar el producto";
-        res.send({message: "DELETE_PRODUCT", data: data});        
+        res.send({"success": true,message: "DELETE_PRODUCT", data: data});        
     }catch(e){  
         console.log(e)
     }
