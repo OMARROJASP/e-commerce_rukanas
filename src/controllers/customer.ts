@@ -1,15 +1,14 @@
 import * as customerService from "../services/customer";
 import { createCrudController } from "./crud.controller";
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { CustomerEntity } from '../entities/customer.entity';
 import { AuthenticatedRequest } from '../types/express/custom';
-
+import { handleHttp } from "../utils/error.handler";
 
 export const {
     getAll: getCustomersController,
     getById: getCustomerByIdController, 
     create: saveCustomerController,
-    update: updateCustomerController,
     remove: deleteCustomerController
 } = createCrudController(customerService);
 
@@ -35,6 +34,52 @@ try {
     res.status(500).json({ message: "Error al obtener el perfil" });
   }
 }
+
+export const updateCustomerController = async (req:AuthenticatedRequest, res:Response,  next: NextFunction): Promise<void> => {
+
+
+    try{
+         // obtenemos el id de la categoria
+         const user =  req.user;
+         if (!user) {
+            res.status(401).json({ message: "No autenticado" });
+            return;
+        }
+
+        const idNumber = parseInt(user.cx_id.toString(), 10);
+        // 1. Verificar si la categoría existe
+        const existingCustomer = await customerService.getById(idNumber);
+        if(!existingCustomer){
+            res.status(404).json({
+                message: "Customer no encontrada"
+            });
+            return;
+        }
+        
+       // 4. Preparar datos para actualización
+        const customerData = {
+            cx_first_name: req.body.cx_first_name || existingCustomer.cx_first_name,
+            cx_last_name: req.body.cx_last_name || existingCustomer.cx_last_name,
+            cx_phone: req.body.cx_phone || existingCustomer.cx_phone,
+            cx_address: req.body.cx_address || existingCustomer.cx_address,
+            cx_city: req.body.cx_city || existingCustomer.cx_city,
+            cx_postal_code:req.body.cx_postal_code || existingCustomer.cx_postal_code,
+            cx_email: req.body.cx_email || existingCustomer.cx_email
+        }; 
+
+           // 5. Actualizar en base de datos
+        const updatedCustomer = await customerService.update(customerData, idNumber);
+        res.status(200).json({
+            message: "Customer actualizada exitosamente",
+            data: updatedCustomer,
+        })
+    }catch(e){
+        console.error("Error al actualizar customer", e)
+        handleHttp(res, "ERROR_GET_CUSTOMER")
+    }
+}
+
+
 
 
 

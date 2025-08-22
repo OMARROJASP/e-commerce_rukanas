@@ -12,12 +12,12 @@ import {
 
 const router = Router();
 router.get("/perfil",authMiddleware, getPerfilController); // Ruta protegida
-
+router.put("/edit", authMiddleware, updateCustomerController);
 
 router.get("/", getCustomersController);
 router.get("/:id", getCustomerByIdController); // Ruta protegida
 router.post("/", saveCustomerController);
-router.put("/:id", updateCustomerController);
+
 router.delete("/:id", deleteCustomerController);
 
 export { router}

@@ -32,7 +32,7 @@ const create = async (data: DeepPartial<CustomerEntity>) => {
 };  
 
 const update = async (data: Partial<CustomerEntity>, id: number) => {
-    const response = await customerRepo.update(id, data);
+    const response = await customerRepo.update( {cx_id:id}, data);
     return response;
 }
 

@@ -67,12 +67,13 @@ const saveProductController = async (req: Request, res:Response, next: NextFunct
         // Insertar en la base de datos
         const responseProducts = await insertProduct(productData);
         
-       res.status(201).json({
+        res.status(201).json({
             message: "producto creada exitosamente",
-            data: responseProducts
+            data: responseProducts,
+            success: true,
         });
     }catch(e){
-         console.error("Error al guardar producto:", e);
+        console.error("Error al guardar producto:", e);
     }
 }
 
