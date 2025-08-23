@@ -120,9 +120,12 @@ const updateProductController = async (req: Request, res:Response) => {
 
         };
 
-        console.log("DATOS DEL PRODUCTO A ACTUALIZAR: ", productData)
-
         const responseProducts = await updateProduct(productData, idNumber);
+console.log("DATOS DEL PRODUCTO A ACTUALIZAR: ", productData)
+        if (responseProducts === null ) {
+            res.status(404).json({success: false ,message: "No se encontro el producto", data: responseProducts });
+            return
+        }
         res.status(200).json({
             success: true,
             message: "Producto actualizado exitosamente",
@@ -130,11 +133,10 @@ const updateProductController = async (req: Request, res:Response) => {
         })
     }catch(e){  
         console.log(e)
-        //  res.status(404).json({
-        //     success: false,
-        //     message: "No se encontró el producto con ese ID",
-        //     errors: ["Producto no existe en la base de datos"]
-        // })
+         res.status(404).json({
+            success: false,
+            message: "No se encontró el producto con ese ID"
+        })
 
     }
 }
@@ -173,15 +175,15 @@ const getProductsByFilterController = async (req: Request, res: Response, next: 
 
     if (!responseProducts.products.length) {
 
-       res.status(404).json({ message: "No se encontraron productos para esta filtro", data: responseProducts });
+       res.status(404).json({success: false ,message: "No se encontraron productos para esta filtro", data: responseProducts });
        return
     }
 
    
 
-    res.status(200).json({ message: "LIST_PRODUCTS_BY_producto", data: responseProducts });
+    res.status(200).json({ success: true, message: "LIST_PRODUCTS_BY_producto", data: responseProducts });
   } catch (e) {
-    res.status(500).json({ message: "Error interno del servidor" });
+    res.status(500).json({ sucess: false, message: "Error interno del servidor" });
   }
 };
 
