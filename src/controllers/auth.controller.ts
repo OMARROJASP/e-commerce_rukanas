@@ -76,14 +76,14 @@ export class AuthController {
       // Verificar usuario
       const user = await this.userRepository.findOne({ where: { cx_email } });
       if (!user) {
-        res.status(401).json({ message: "Credenciales inválidas" });
+        res.status(401).json({ success: false, message: "Credenciales inválidas" });
         return;
       }
 
       // Verificar contraseña
       const isMatch = await user.comparePassword(cx_password);
       if (!isMatch) {
-        res.status(401).json({ message: "Credenciales inválidas" });
+        res.status(401).json({ success: false, message: "Credenciales inválidas" });
         return;
       }
 
@@ -114,7 +114,7 @@ export class AuthController {
         maxAge: 60*60*1000 // 1 hora en milisegundos
       })
       .status(200)
-      .json({ message: "Login exitoso" });
+      .json({success: true, message: "Login exitoso" });
 
 
       // Enviar respuesta de datos de usuario y token pero para localStorage
@@ -124,7 +124,17 @@ export class AuthController {
       // });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Error al iniciar sesión" });
+      res.status(500).json({success: false, message: "Error al iniciar sesión" });
     }
   }
+
+  logOut = async(req:Request, res:Response) : Promise<void> => {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      })
+    .status(200)
+    .json({ success: true, message: "Sesión cerrada correctamente" });
+  } 
 }

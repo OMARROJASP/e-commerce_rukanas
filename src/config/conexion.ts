@@ -6,6 +6,7 @@ import { OrderEntity } from "../entities/order.entity";
 import { SupplierEntity } from "../entities/supplier.entity";
 import { OrderDetailEntity } from "../entities/orderDetail.entity";
 import { BannerEntity } from "../entities/banner.entity";
+import { PasswordResetToken } from "../entities/PasswordResetToken ";
 
 
 export const AppDataSource = new DataSource({
@@ -17,7 +18,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME || "ecommerce",
     synchronize: true,
     logging: false,
-    entities: [CustomerEntity, ProductEntity,CategoryEntity, OrderEntity, SupplierEntity, OrderDetailEntity, BannerEntity],
+    entities: [CustomerEntity, ProductEntity,CategoryEntity, OrderEntity, SupplierEntity, OrderDetailEntity, BannerEntity, PasswordResetToken],
     migrations: [],
     subscribers: [],
 })

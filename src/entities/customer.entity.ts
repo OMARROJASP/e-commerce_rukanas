@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { OrderEntity } from "./order.entity";
+import { PasswordResetToken } from "./PasswordResetToken ";
 import { join } from "path";
 import * as bcrypt from "bcryptjs";
 
@@ -38,6 +39,8 @@ export class CustomerEntity {
   @OneToMany(() => OrderEntity, order => order.ord_customer)
   orders!: OrderEntity[];
 
+  @OneToMany(() =>PasswordResetToken, token => token.customer )
+  passwordResetTokens!: PasswordResetToken[];
 
 
 
