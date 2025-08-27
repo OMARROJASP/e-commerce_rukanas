@@ -7,7 +7,9 @@ import bcrypt from "bcryptjs";
 const customersRepository = AppDataSource.getRepository(CustomerEntity);
 const tokenRepo = AppDataSource.getRepository(PasswordResetToken);
 
+
 export class PasswordResetService {
+
     static async createResetToken(email: string) {
         const customer = await customersRepository.findOne({ where: { cx_email:email } });
         if (!customer) throw new Error("Usuario no encontrado");
