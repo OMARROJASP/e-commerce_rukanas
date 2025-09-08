@@ -1,4 +1,4 @@
-import { DeepPartial } from "typeorm";
+import { DeepPartial, Like } from "typeorm";
 import { AppDataSource } from "../config/conexion";
 import { CustomerEntity } from "../entities/customer.entity";
 import { Customer } from "../interface/customer.interface";
@@ -41,5 +41,46 @@ const remove = async (id: number) => {
   return { deleted: true };
 };
 
+const getFilterCustomers = async (limit:number = 10, page:number = 1, text?:string) => {
+
+  const where: any = {};
+
+  // para la busqueda por texto
+  if (text) {
+    where.cx_first_name = Like(`%${text}%`)
+  }
+
+   const skip = (page - 1) * limit;
+
+  // 1. obtengo customers del filtro
+
+  const totalItems = await customerRepo.find({where,order: { cx_first_name: 'asc' }});
+
+  // 2. Customers Paginados
+
+  const customersTotal = await customerRepo.find({
+    where,
+    skip, 
+    take: limit,
+    order: { cx_first_name: 'asc' }
+  })
+  // 3. Obtengo filtro de customers
+
+  const db = customerRepo.createQueryBuilder('customer');
+
+  // 4 . Obtengo total de paginas
+  const totalPages = Math.ceil(totalItems.length / limit);
+
+  return {
+    customersTotal,
+    pagination: {
+      totalItems: totalItems,
+      currentPage: page,
+      totalPages: totalPages,
+      itemsPerPage: limit
+    }
+  }
+}
+
 // 👇 Exportamos con los nombres que espera el controlador genérico
-export { getAll, getById, create, update, remove };
+export { getAll, getById, create, update, remove, getFilterCustomers };

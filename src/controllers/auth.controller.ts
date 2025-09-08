@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../config/conexion";
 import { CustomerEntity } from "../entities/customer.entity";
+import admin from "../config/firebase";
 import * as jwt from "jsonwebtoken";
 
 // Verifica que JWT_SECRET esté definido
@@ -137,4 +138,41 @@ export class AuthController {
     .status(200)
     .json({ success: true, message: "Sesión cerrada correctamente" });
   } 
+
+
+loginFirebase = async (req: Request, res: Response) => {
+  try {
+    const { token } = req.body;
+    const decoded = await admin.auth().verifyIdToken(token);
+
+    let customer = await this.userRepository.findOne({ where: { cx_email: decoded.email } });
+
+    if (!customer) {
+      customer = this.userRepository.create({
+        cx_email: decoded.email,
+        cx_first_name: decoded.name || "",
+      });
+      await this.userRepository.save(customer);
+    }
+
+    // Siempre respondemos, exista o no el customer antes
+    let token_jwt = jwt.sign(
+        { userId: customer.cx_id, email: customer.cx_email },
+        JWT_SECRET_KEY ,
+        { expiresIn: "1h" }
+      );
+    res.cookie('token', token_jwt, {
+        httpOnly: true, // Evita acceso desde JavaScript
+        secure: process.env.NODE_ENV === 'production', // Solo enviar por HTTPS en producciónsa
+        sameSite: 'lax', // Evita envío en solicitudes de terceros
+        maxAge: 60*60*1000 // 1 hora en milisegundos
+      })
+      .status(200)
+      .json({success: true, message: "Login exitoso" });
+  } catch (err) {
+    console.error(err);
+    res.status(401).json({ error: "Token inválido" });
+  }
+};
+
 }

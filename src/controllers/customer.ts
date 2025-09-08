@@ -80,6 +80,24 @@ export const updateCustomerController = async (req:AuthenticatedRequest, res:Res
 }
 
 
+export const filterCustomersController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    
+    try {
+        const{limit, page, text} = req.query;
+
+        const customers = await customerService.getFilterCustomers(
+            limit ? parseInt(limit as string): 10,
+            page ? parseInt(page as string): 1,
+            text as string
+        );
+        res.status(200).json({ success: true, data: customers });
+
+    } catch (error) {
+        res.status(500).json({ sucess: false, message: "Error interno del servidor" });
+        handleHttp(res, "ERROR_FILTER_CUSTOMERS");
+    }
+}
+
 
 
 

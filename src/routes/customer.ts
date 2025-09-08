@@ -7,12 +7,14 @@ import {
     saveCustomerController,
     updateCustomerController,
     deleteCustomerController,
-    getPerfilController
+    getPerfilController,
+    filterCustomersController
 } from "../controllers/customer"
 
 const router = Router();
 router.get("/perfil",authMiddleware, getPerfilController); // Ruta protegida
 router.put("/edit", authMiddleware, updateCustomerController);
+router.get("/filter", filterCustomersController); // Ruta protegida
 
 router.get("/", getCustomersController);
 router.get("/:id", getCustomerByIdController); // Ruta protegida
