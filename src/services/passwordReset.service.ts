@@ -1,6 +1,6 @@
 import { AppDataSource } from "../config/conexion";
 import { CustomerEntity } from "../entities/customer.entity"; 
-import { PasswordResetToken } from "../entities/PasswordResetToken ";
+import { PasswordResetToken } from "../entities/passwordResetToken";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 

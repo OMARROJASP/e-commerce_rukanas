@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
 import { AppDataSource } from "../config/conexion";
-import { CustomerEntity } from "../entities/customer.entity";
+import { CustomerEntity, CustomerRole } from "../entities/customer.entity";
+import { AuthenticatedRequest } from "../types/express/custom";
 
 // Verifica que JWT_SECRET esté definido
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -66,3 +67,22 @@ if (!token) {
 
 
 }
+
+// Middleware para roles
+export const authorize = (...roles: CustomerRole[]) => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      res.status(401).json({ message: "No autorizado" });
+      return;
+    }
+
+    const userRole = req.user.cx_role as CustomerRole; // 👈 asegura tipo
+
+    if (!roles.includes(userRole)) {
+      res.status(403).json({ message: "No tienes permiso", role: userRole });
+      return;
+    }
+
+    next();
+  };
+};

@@ -42,7 +42,7 @@ export class AuthController {
 
             //generar token JWT
             const token = jwt.sign(
-                {userId: user.cx_id, cx_email:user.cx_email},
+                {userId: user.cx_id, cx_email:user.cx_email, role: user.cx_role },
                 JWT_SECRET_KEY,
                 {expiresIn: "1h"}
             );
@@ -90,7 +90,7 @@ export class AuthController {
 
       // Generar token JWT
       const token = jwt.sign(
-        { userId: user.cx_id, email: user.cx_email },
+        { userId: user.cx_id, email: user.cx_email, role: user.cx_role },
         JWT_SECRET_KEY ,
         { expiresIn: "1h" }
       );
@@ -115,7 +115,7 @@ export class AuthController {
         maxAge: 60*60*1000 // 1 hora en milisegundos
       })
       .status(200)
-      .json({success: true, message: "Login exitoso" });
+      .json({success: true, message: "Login exitoso",token });
 
 
       // Enviar respuesta de datos de usuario y token pero para localStorage
@@ -157,7 +157,7 @@ loginFirebase = async (req: Request, res: Response) => {
 
     // Siempre respondemos, exista o no el customer antes
     let token_jwt = jwt.sign(
-        { userId: customer.cx_id, email: customer.cx_email },
+        { userId: customer.cx_id, email: customer.cx_email, role: customer.cx_role  },
         JWT_SECRET_KEY ,
         { expiresIn: "1h" }
       );

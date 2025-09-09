@@ -6,7 +6,7 @@ import { OrderEntity } from "../entities/order.entity";
 import { SupplierEntity } from "../entities/supplier.entity";
 import { OrderDetailEntity } from "../entities/orderDetail.entity";
 import { BannerEntity } from "../entities/banner.entity";
-import { PasswordResetToken } from "../entities/PasswordResetToken ";
+import { PasswordResetToken } from "../entities/passwordResetToken";
 
 
 export const AppDataSource = new DataSource({

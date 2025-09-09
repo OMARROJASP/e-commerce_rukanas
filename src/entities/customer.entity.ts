@@ -1,8 +1,14 @@
 import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { OrderEntity } from "./order.entity";
-import { PasswordResetToken } from "./PasswordResetToken ";
+import { PasswordResetToken } from "./passwordResetToken";
 import { join } from "path";
 import * as bcrypt from "bcryptjs";
+
+export enum CustomerRole {
+  ADMIN = "admin",
+  CUSTOMER = "customer",
+  MODERATOR = "moderator",
+}
 
 @Entity("customers")
 export class CustomerEntity {
@@ -35,6 +41,13 @@ export class CustomerEntity {
 
   // @OneToMany(() => CartItemEntity, item => item.user)
   // cartItems!: CartItemEntity[]
+
+  @Column({
+    type: "enum",
+    enum: CustomerRole,
+    default: CustomerRole.CUSTOMER,
+  })
+  cx_role!: CustomerRole;
 
   @OneToMany(() => OrderEntity, order => order.ord_customer)
   orders!: OrderEntity[];
