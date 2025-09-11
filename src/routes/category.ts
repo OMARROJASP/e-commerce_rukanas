@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { getCategoriesController,getCategoryByIdController,saveCategoryController,updateCategoryController,deleteCategoryController } from "../controllers/category";
+import { getCategoriesController,getCategoryByIdController,saveCategoryController,updateCategoryController,deleteCategoryController, filterCustomersController } from "../controllers/category";
 import { uploadCategoryImage, resizeAndUploadImage, resizeAndUploadImage1 } from "../middlewares/imageUploadMiddleware";
 
 
 const router = Router();
-
+router.get("/filter", filterCustomersController); // Ruta para el filtrado de categorías
 router.get("/", getCategoriesController) 
 router.get("/:id", getCategoryByIdController)
 router.post("/", 
