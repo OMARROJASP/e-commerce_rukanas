@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../config/conexion";
-import { CustomerEntity } from "../entities/customer.entity";
+import { CustomerEntity, CustomerRole } from "../entities/customer.entity";
 import admin from "../config/firebase";
 import * as jwt from "jsonwebtoken";
 
@@ -77,7 +77,7 @@ export class AuthController {
       // Verificar usuario
       const user = await this.userRepository.findOne({ where: { cx_email } });
       if (!user) {
-        res.status(401).json({ success: false, message: "Credenciales inválidas" });
+        res.status(401).json({ success: false, message: "El usuario no existe" });
         return;
       }
 
@@ -88,6 +88,13 @@ export class AuthController {
         return;
       }
 
+        // 🔹 Validar rol
+      if (user.cx_role !== CustomerRole.ADMIN) {
+        res.status(403).json({ success: false, message: "Acceso restringido solo a administradores" });
+        return;
+      }
+
+
       // Generar token JWT
       const token = jwt.sign(
         { userId: user.cx_id, email: user.cx_email, role: user.cx_role },
@@ -95,17 +102,7 @@ export class AuthController {
         { expiresIn: "1h" }
       );
 
-      // creacion de los datos de user 
-      // const dataUser = {
-      //   id_user: user.cx_id,
-      //   first_name: user.cx_first_name,
-      //   last_name:  user.cx_last_name,
-      //   phone: user.cx_phone,
-      //   address: user.cx_address,
-      //   city:user.cx_city,  
-      //   postal_code: user.cx_postal_code,
-      //   email: user.cx_email,
-      // }
+    
 
       // Enviar respuesta de datos de usuario y token pero por cookies
       res.cookie('token', token, {
@@ -115,21 +112,16 @@ export class AuthController {
         maxAge: 60*60*1000 // 1 hora en milisegundos
       })
       .status(200)
-      .json({success: true, message: "Login exitoso",token });
+      .json({success: true, message: "Login exitoso" });
 
 
-      // Enviar respuesta de datos de usuario y token pero para localStorage
-      // res.status(200).json({
-      //   dataUser: dataUser,
-      //   token,
-      // });
     } catch (error) {
       console.error(error);
       res.status(500).json({success: false, message: "Error al iniciar sesión" });
     }
-  }
+    }
 
-  logOut = async(req:Request, res:Response) : Promise<void> => {
+    logOut = async(req:Request, res:Response) : Promise<void> => {
     res.clearCookie('token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -137,10 +129,10 @@ export class AuthController {
       })
     .status(200)
     .json({ success: true, message: "Sesión cerrada correctamente" });
-  } 
+    } 
 
 
-loginFirebase = async (req: Request, res: Response) => {
+    loginFirebase = async (req: Request, res: Response) => {
   try {
     const { token } = req.body;
     const decoded = await admin.auth().verifyIdToken(token);
@@ -173,6 +165,6 @@ loginFirebase = async (req: Request, res: Response) => {
     console.error(err);
     res.status(401).json({ error: "Token inválido" });
   }
-};
+    };
 
 }

@@ -15,7 +15,7 @@ import { CustomerRole } from "../entities/customer.entity";
 const router = Router();
 router.get("/perfil",authMiddleware, getPerfilController); // Ruta protegida
 router.put("/edit", authMiddleware, updateCustomerController);
-router.get("/filter", filterCustomersController); // Ruta protegida
+router.get("/filter",authMiddleware, filterCustomersController); // Ruta protegida
 //router.get("/filter", authorize(CustomerRole.ADMIN) ,filterCustomersController); // Ruta protegida
 
 router.get("/", getCustomersController);

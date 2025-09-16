@@ -20,7 +20,7 @@ export class MailService {
       to: email,
       subject: "Recuperación de contraseña",
       html: `
-        <h3>Hola,</h3>
+        <h3>Hola, </h3>
         <p>Has solicitado restablecer tu contraseña.</p>
         <p>Haz clic en el siguiente enlace para continuar:</p>
         <a href="${resetLink}" target="_blank">${resetLink}</a>

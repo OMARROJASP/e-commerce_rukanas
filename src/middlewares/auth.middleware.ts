@@ -72,14 +72,14 @@ if (!token) {
 export const authorize = (...roles: CustomerRole[]) => {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     if (!req.user) {
-      res.status(401).json({ message: "No autorizado" });
+      res.status(401).json({ success: false, message: "No autorizado" });
       return;
     }
 
     const userRole = req.user.cx_role as CustomerRole; // 👈 asegura tipo
 
     if (!roles.includes(userRole)) {
-      res.status(403).json({ message: "No tienes permiso", role: userRole });
+      res.status(403).json({success: false, message: "No tienes permiso", role: userRole });
       return;
     }
 

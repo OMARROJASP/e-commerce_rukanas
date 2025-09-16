@@ -1,7 +1,6 @@
 import { DeepPartial, Like } from "typeorm";
 import { AppDataSource } from "../config/conexion";
 import { CustomerEntity } from "../entities/customer.entity";
-import { Customer } from "../interface/customer.interface";
 
 const customerRepo = AppDataSource.getRepository(CustomerEntity);
 
