@@ -28,4 +28,19 @@ export class MailService {
       `,
     });
   }
+
+  async sendReviewRequest(email: string, orderId: number) {
+  await this.transporter.sendMail({
+    to: email,
+    subject: "¡Tu pedido fue completado! 🎉",
+    html: `
+      <p>Hola, tu pedido #${orderId} fue completado con éxito.</p>
+      <p>¿Nos ayudas dejando un comentario de los productos que compraste?</p>
+      <a href="${process.env.FRONTEND_URL}/review/${orderId}">
+        Dejar comentario
+      </a>
+    `
+  });
+}
+
 }

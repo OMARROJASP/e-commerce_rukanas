@@ -2,16 +2,69 @@ import { Request, Response } from "express";
 import * as orderService from "../services/order";
 import { createCrudController } from "./crud.controller";
 import { AuthenticatedRequest } from '../types/express/custom';
+import { MailService } from "../services/mail.service";
+import { getById } from "../services/customer";
 
-export const {
+    export const {
     getAll: getOrdersController,
     getById: getOrderByIdController,
-    create: saveOrderController,    
-    update: updateOrderController,
+    create: saveOrderController,
     remove: deleteOrderController
-} = createCrudController(orderService);
+    } = createCrudController(orderService);
 
-export const getProductByOrderByIdController = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    export const updateOrderController = async(req: AuthenticatedRequest, res: Response) => {
+        try {
+            const { id } = req.params;
+            const idNumber = parseInt(id);
+            const existingOrder = await orderService.getById(idNumber);
+            const mailService = new MailService();
+
+            if (!existingOrder) {
+                res.status(404).json({
+                    success: false,
+                    message: 'Order no encontrada'
+                })
+                return;
+            }
+
+            const orderData = {
+                ord_status : req.body.ord_status,
+                ord_customer: req.body.ord_customer,
+                ord_date: req.body.ord_date
+            }
+
+            const responseOrder = await orderService.update(orderData, idNumber);
+
+            if (responseOrder === null ) {
+            res.status(404).json({success: false ,message: "No se encontro la orden", data: responseOrder });
+            return
+            }
+
+            if (orderData.ord_status === 'COMPLETED') {
+
+                const infoUser = await getById(req.body.ord_customer)
+                if (!infoUser) { return}
+
+
+            await mailService.sendReviewRequest(infoUser.cx_email, idNumber);
+            }
+
+            res.status(200).json({
+            success: true,
+            message: "Orden actualizado exitosamente",
+
+            })
+        } catch (e) {
+            console.log(e)
+            res.status(404).json({
+            success: false,
+            message: "No se encontró la order con ese ID"
+        })
+
+        }
+    }
+
+    export const getProductByOrderByIdController = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
         const user =  req.user;
         if (!user) {
@@ -38,7 +91,7 @@ export const getProductByOrderByIdController = async (req: AuthenticatedRequest,
         console.error(e);
         res.status(500).json({ message: "Error interno del servidor" });
     }
-}
+    }
 
 
 // Para la plataforma de Admin
